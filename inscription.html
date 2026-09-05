@@ -198,6 +198,15 @@
 <footer>
   © 2026 AIDONS-NOUS VIVANTS
 </footer>
+<script>
+  document.querySelector("form").addEventListener("submit", function(event) {
+    event.preventDefault();
 
+    alert("Inscription enregistrée avec succès !");
+
+    window.location.href = "dashboard.html";
+  });
+</script>
+  
 </body>
   </html>
