@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Créer mon compte - AIDONS-NOUS VIVANTS</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f5f7fa;
+      color: #172033;
+    }
+
+    header {
+      background: #0b6b4f;
+      color: white;
+      padding: 22px 18px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 23px;
+    }
+
+    .container {
+      padding: 25px 18px;
+      max-width: 500px;
+      margin: auto;
+    }
+
+    .card {
+      background: white;
+      padding: 25px 20px;
+      border-radius: 16px;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .intro {
+      text-align: center;
+      color: #687282;
+      margin-bottom: 25px;
+      line-height: 1.5;
+    }
+
+    label {
+      display: block;
+      margin-top: 16px;
+      margin-bottom: 7px;
+      font-weight: bold;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #d5dae0;
+      border-radius: 9px;
+      font-size: 16px;
+    }
+
+    .check {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .check input {
+      width: auto;
+      margin-top: 3px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 25px;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      background: #0b6b4f;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #0b6b4f;
+      text-decoration: none;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #687282;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>AIDONS-NOUS VIVANTS</h1>
+</header>
+
+<div class="container">
+
+  <div class="card">
+
+    <h2>Créer mon compte</h2>
+
+    <p class="intro">
+      Remplissez vos informations pour rejoindre
+      AIDONS-NOUS VIVANTS.
+    </p>
+
+    <form>
+
+      <label>Nom et prénom</label>
+      <input
+        type="text"
+        placeholder="Exemple : Yasmine Kouassi"
+        required
+      >
+
+      <label>Numéro de téléphone</label>
+      <input
+        type="tel"
+        placeholder="Exemple : 07 00 00 00 00"
+        required
+      >
+
+      <label>Email</label>
+      <input
+        type="email"
+        placeholder="Exemple : exemple@email.com"
+        required
+      >
+
+      <label>Localisation</label>
+      <select required>
+        <option value="">Sélectionnez votre ville</option>
+        <option>Abidjan</option>
+        <option>Bouaké</option>
+        <option>Yamoussoukro</option>
+        <option>San-Pédro</option>
+        <option>Korhogo</option>
+        <option>Autre</option>
+      </select>
+
+      <label>Mot de passe</label>
+      <input
+        type="password"
+        placeholder="Créer un mot de passe"
+        required
+      >
+
+      <div class="check">
+        <input type="checkbox" required>
+
+        <span>
+          J'accepte le règlement de la tontine
+          AIDONS-NOUS VIVANTS.
+        </span>
+      </div>
+
+      <button type="submit">
+        Créer mon compte
+      </button>
+
+    </form>
+
+    <a href="index.html" class="back">
+      ← Retour à l'accueil
+    </a>
+
+  </div>
+
+</div>
+
+<footer>
+  © 2026 AIDONS-NOUS VIVANTS
+</footer>
+
+</body>
+  </html>
