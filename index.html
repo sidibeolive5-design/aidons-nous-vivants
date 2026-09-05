@@ -1,9 +1,142 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>AIDONS-NOUS VIVANTS</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f5f7fa;
+      color: #172033;
+    }
+
+    header {
+      background: #0b6b4f;
+      color: white;
+      padding: 22px 18px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 24px;
+      margin-bottom: 7px;
+    }
+
+    header p {
+      font-size: 14px;
+    }
+
+    .hero {
+      padding: 35px 20px;
+      text-align: center;
+      background: white;
+    }
+
+    .hero h2 {
+      font-size: 27px;
+      margin-bottom: 14px;
+    }
+
+    .hero p {
+      color: #606a78;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+
+    .button {
+      display: block;
+      width: 100%;
+      max-width: 350px;
+      margin: 10px auto;
+      padding: 15px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .primary {
+      background: #0b6b4f;
+      color: white;
+    }
+
+    .secondary {
+      border: 2px solid #0b6b4f;
+      color: #0b6b4f;
+      background: white;
+    }
+
+    .section {
+      padding: 25px 18px;
+    }
+
+    .section h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-radius: 15px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+    }
+
+    .card h3 {
+      margin-bottom: 12px;
+    }
+
+    .price {
+      font-size: 28px;
+      font-weight: bold;
+      color: #0b6b4f;
+      margin: 12px 0;
+    }
+
+    .details {
+      line-height: 1.9;
+      color: #596273;
+    }
+
+    .steps {
+      display: grid;
+      gap: 12px;
+    }
+
+    .step {
+      background: white;
+      padding: 18px;
+      border-radius: 12px;
+    }
+
+    .step strong {
+      color: #0b6b4f;
+    }
+
+    footer {
+      background: #172033;
+      color: white;
+      text-align: center;
+      padding: 25px 15px;
+      margin-top: 20px;
+    }
+
+    footer p {
+      font-size: 13px;
+      margin: 6px 0;
+    }
+  </style>
 </head>
 
 <body>
@@ -13,26 +146,125 @@
     <p>Ensemble, nous avançons.</p>
   </header>
 
-  <main>
-    <h2>Bienvenue sur AIDONS-NOUS VIVANTS</h2>
+  <section class="hero">
+
+    <h2>Bienvenue 👋🏽</h2>
 
     <p>
-      Une plateforme simple et transparente pour gérer vos tontines,
-      suivre vos cotisations et connaître votre progression.
+      Une plateforme simple et transparente pour participer
+      à nos tontines, suivre vos cotisations et connaître
+      votre progression.
     </p>
 
-    <h3>Tontine 100 000 FCFA</h3>
+    <a href="#" class="button primary">
+      Créer mon compte
+    </a>
 
-    <p><strong>10 membres</strong></p>
-    <p><strong>1 100 FCFA / jour</strong></p>
-    <p><strong>100 jours</strong></p>
+    <a href="#" class="button secondary">
+      Se connecter
+    </a>
 
-    <button>Créer mon compte</button>
-    <button>Se connecter</button>
-  </main>
+  </section>
+
+
+  <section class="section">
+
+    <h2>Notre tontine</h2>
+
+    <div class="card">
+
+      <h3>Tontine 100 000 FCFA</h3>
+
+      <div class="price">
+        100 000 F
+      </div>
+
+      <div class="details">
+
+        👥 10 membres<br>
+        💰 1 100 FCFA / jour<br>
+        📅 100 jours<br>
+        ⚠️ Retard : 500 FCFA / jour
+
+      </div>
+
+      <br>
+
+      <a href="#" class="button primary">
+        Participer à la tontine
+      </a>
+
+    </div>
+
+  </section>
+
+
+  <section class="section">
+
+    <h2>Comment ça marche ?</h2>
+
+    <div class="steps">
+
+      <div class="step">
+        <strong>1. Créez votre compte</strong>
+        <p>Inscrivez-vous avec vos informations.</p>
+      </div>
+
+      <div class="step">
+        <strong>2. Rejoignez la tontine</strong>
+        <p>Choisissez la tontine de 100 000 FCFA.</p>
+      </div>
+
+      <div class="step">
+        <strong>3. Payez chaque jour</strong>
+        <p>Cotisez 1 100 FCFA par jour.</p>
+      </div>
+
+      <div class="step">
+        <strong>4. Suivez votre progression</strong>
+        <p>Votre espace personnel affichera vos jours payés et vos jours restants.</p>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <section class="section">
+
+    <div class="card">
+
+      <h3>🔐 Transparence</h3>
+
+      <p>
+        Chaque cotisation confirmée est enregistrée afin
+        de permettre à chaque membre de suivre sa participation.
+      </p>
+
+    </div>
+
+    <div class="card">
+
+      <h3>📱 Accessible sur téléphone</h3>
+
+      <p>
+        AIDONS-NOUS VIVANTS est conçu pour être simple
+        et facile à utiliser depuis un smartphone.
+      </p>
+
+    </div>
+
+  </section>
+
 
   <footer>
+
+    <h3>AIDONS-NOUS VIVANTS</h3>
+
+    <p>Ensemble, nous avançons.</p>
+
     <p>© 2026 AIDONS-NOUS VIVANTS</p>
+
   </footer>
 
 </body>
