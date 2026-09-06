@@ -163,6 +163,14 @@
       background: white;
     }
 
+    .logout {
+      border: none;
+      background: #c62828;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
     .menu {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -200,7 +208,7 @@
 
   <div class="welcome">
     <h2>Bonjour 👋🏽</h2>
-    <p>Bienvenue dans votre espace personnel.</p>
+    <p id="memberEmail">Chargement de votre compte...</p>
   </div>
 
   <div class="card">
@@ -298,6 +306,10 @@
     💳 Effectuer ma cotisation
   </a>
 
+  <button id="logoutButton" class="button logout">
+    🚪 Se déconnecter
+  </button>
+
   <a href="index.html" class="button secondary">
     ← Retour à l'accueil
   </a>
@@ -309,5 +321,49 @@
   <p>© 2026 — Ensemble, nous avançons.</p>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+  const SUPABASE_URL = "https://wwmndbzifmlqpkbpcntz.supabase.co";
+
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_jnjVBvAwxelousFOy8UEzQ_CZ4mb86b";
+
+  const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+
+
+  async function checkUser() {
+
+    const { data, error } = await supabaseClient.auth.getUser();
+
+    if (error || !data.user) {
+
+      window.location.href = "connexion.html";
+
+      return;
+    }
+
+    document.getElementById("memberEmail").textContent =
+      "Connecté avec : " + data.user.email;
+  }
+
+
+  checkUser();
+
+
+  document.getElementById("logoutButton").addEventListener("click", async function () {
+
+    await supabaseClient.auth.signOut();
+
+    window.location.href = "connexion.html";
+
+  });
+
+</script>
+
 </body>
-    </html>
+</html>
+
