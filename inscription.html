@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html lang="fr">
+<!DOCTYPE html><html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Créer mon compte - AIDONS-NOUS VIVANTS</title>
-
-  <style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>Créer mon compte - AIDONS-NOUS VIVANTS</title>  <style>
     * {
       box-sizing: border-box;
       margin: 0;
@@ -97,6 +92,17 @@
       cursor: pointer;
     }
 
+    button:disabled {
+      opacity: 0.6;
+    }
+
+    .message {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
     .back {
       display: block;
       text-align: center;
@@ -111,102 +117,175 @@
       color: #687282;
       font-size: 13px;
     }
-  </style>
-</head>
-
-<body>
-
-<header>
+  </style></head><body><header>
   <h1>AIDONS-NOUS VIVANTS</h1>
-</header>
+</header><div class="container">  <div class="card"><h2>Créer mon compte</h2>
 
-<div class="container">
+<p class="intro">
+  Remplissez vos informations pour rejoindre
+  AIDONS-NOUS VIVANTS.
+</p>
 
-  <div class="card">
+<form id="inscriptionForm">
 
-    <h2>Créer mon compte</h2>
+  <label for="nom">Nom</label>
+  <input
+    id="nom"
+    type="text"
+    placeholder="Exemple : Kouassi"
+    required
+  >
 
-    <p class="intro">
-      Remplissez vos informations pour rejoindre
+  <label for="prenom">Prénom</label>
+  <input
+    id="prenom"
+    type="text"
+    placeholder="Exemple : Yasmine"
+    required
+  >
+
+  <label for="telephone">Numéro de téléphone</label>
+  <input
+    id="telephone"
+    type="tel"
+    placeholder="Exemple : 07 00 00 00 00"
+    required
+  >
+
+  <label for="email">Email</label>
+  <input
+    id="email"
+    type="email"
+    placeholder="Exemple : exemple@email.com"
+    required
+  >
+
+  <label for="ville">Ville</label>
+  <select id="ville" required>
+    <option value="">Sélectionnez votre ville</option>
+    <option value="Abidjan">Abidjan</option>
+    <option value="Bouaké">Bouaké</option>
+    <option value="Yamoussoukro">Yamoussoukro</option>
+    <option value="San-Pédro">San-Pédro</option>
+    <option value="Korhogo">Korhogo</option>
+    <option value="Autre">Autre</option>
+  </select>
+
+  <label for="password">Mot de passe</label>
+  <input
+    id="password"
+    type="password"
+    placeholder="Créer un mot de passe"
+    minlength="6"
+    required
+  >
+
+  <div class="check">
+    <input id="reglement" type="checkbox" required>
+
+    <span>
+      J'accepte le règlement de la tontine
       AIDONS-NOUS VIVANTS.
-    </p>
-
-    <form>
-
-      <label>Nom et prénom</label>
-      <input
-        type="text"
-        placeholder="Exemple : Yasmine Kouassi"
-        required
-      >
-
-      <label>Numéro de téléphone</label>
-      <input
-        type="tel"
-        placeholder="Exemple : 07 00 00 00 00"
-        required
-      >
-
-      <label>Email</label>
-      <input
-        type="email"
-        placeholder="Exemple : exemple@email.com"
-        required
-      >
-
-      <label>Localisation</label>
-      <select required>
-        <option value="">Sélectionnez votre ville</option>
-        <option>Abidjan</option>
-        <option>Bouaké</option>
-        <option>Yamoussoukro</option>
-        <option>San-Pédro</option>
-        <option>Korhogo</option>
-        <option>Autre</option>
-      </select>
-
-      <label>Mot de passe</label>
-      <input
-        type="password"
-        placeholder="Créer un mot de passe"
-        required
-      >
-
-      <div class="check">
-        <input type="checkbox" required>
-
-        <span>
-          J'accepte le règlement de la tontine
-          AIDONS-NOUS VIVANTS.
-        </span>
-      </div>
-
-      <button type="submit">
-        Créer mon compte
-      </button>
-
-    </form>
-
-    <a href="index.html" class="back">
-      ← Retour à l'accueil
-    </a>
-
+    </span>
   </div>
 
-</div>
+  <button id="submitButton" type="submit">
+    Créer mon compte
+  </button>
 
-<footer>
+  <div id="message" class="message"></div>
+
+</form>
+
+<a href="index.html" class="back">
+  ← Retour à l'accueil
+</a>
+
+  </div></div><footer>
   © 2026 AIDONS-NOUS VIVANTS
-</footer>
-<script>
-  document.querySelector("form").addEventListener("submit", function(event) {
+</footer><!-- Supabase --><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
+
+  const SUPABASE_URL = "https://wwmndbzifmlqpkbpcntz.supabase.co";
+
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_jnjVBvAwxelousFOy8UEzQ_CZ4mb86b";
+
+  const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+
+  const form = document.getElementById("inscriptionForm");
+  const message = document.getElementById("message");
+  const submitButton = document.getElementById("submitButton");
+
+  form.addEventListener("submit", async function(event) {
+
     event.preventDefault();
 
-    alert("Inscription enregistrée avec succès !");
+    message.textContent = "";
+    submitButton.disabled = true;
+    submitButton.textContent = "Création du compte...";
 
-    window.location.href = "dashboard.html";
+    const nom = document.getElementById("nom").value.trim();
+    const prenom = document.getElementById("prenom").value.trim();
+    const telephone = document.getElementById("telephone").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const ville = document.getElementById("ville").value;
+    const password = document.getElementById("password").value;
+
+    try {
+
+      const { data, error } = await supabaseClient.auth.signUp({
+        email: email,
+        password: password
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (!data.user) {
+        throw new Error("Le compte n'a pas pu être créé.");
+      }
+
+      const { error: profileError } = await supabaseClient
+        .from("profiles")
+        .insert({
+          "Id": data.user.id,
+          nom: nom,
+          prenom: prenom,
+          telephone: telephone,
+          email: email,
+          ville: ville
+        });
+
+      if (profileError) {
+        throw profileError;
+      }
+
+      message.textContent =
+        "Compte créé avec succès ! Vérifiez votre email si une confirmation est demandée.";
+
+      message.style.color = "#0b6b4f";
+
+      setTimeout(function() {
+        window.location.href = "connexion.html";
+      }, 2000);
+
+    } catch (error) {
+
+      console.error(error);
+
+      message.textContent =
+        "Erreur : " + error.message;
+
+      message.style.color = "#c0392b";
+
+      submitButton.disabled = false;
+      submitButton.textContent = "Créer mon compte";
+    }
+
   });
-</script>
-  
-</body>
-  </html>
+
+</script></body>
+</html>
