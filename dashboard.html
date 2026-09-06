@@ -353,7 +353,29 @@
 
   checkUser();
 
+async function loadProfile() {
+  const { data: userData } = await supabaseClient.auth.getUser();
 
+  if (!userData.user) {
+    return;
+  }
+
+  const { data: profile, error } = await supabaseClient
+    .from("profiles")
+    .select("Prenom, Nom")
+    .eq("Id", userData.user.id)
+    .single();
+
+  if (error) {
+    console.log(error);
+    return;
+  }
+
+  document.getElementById("welcomeMessage").textContent =
+    "Bonjour " + profile.Prenom + " 👋🏽";
+}
+
+loadProfile();
   document.getElementById("logoutButton").addEventListener("click", async function () {
 
     await supabaseClient.auth.signOut();
