@@ -251,15 +251,14 @@
       const { error: profileError } = await supabaseClient
         .from("profiles")
         .insert({
-          "Id": data.user.id,
-          nom: nom,
-          prenom: prenom,
-          telephone: telephone,
-          "Email": email,
-          ville: ville
-        });
-
-      if (profileError) {
+  "Id": data.user.id,
+  "Nom": nom,
+  "Prenom": prenom,
+  "Numéro de téléphone": telephone,
+  "Email": email,
+  "Ville": ville
+});
+        if (profileError) {
         throw profileError;
       }
 
