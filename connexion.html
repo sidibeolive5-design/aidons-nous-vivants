@@ -99,6 +99,11 @@
       color: #687282;
       font-size: 13px;
     }
+
+    #message {
+      text-align: center;
+      margin-top: 15px;
+    }
   </style>
 </head>
 
@@ -118,19 +123,21 @@
       Accédez à votre espace membre.
     </p>
 
-    <form>
+    <form id="loginForm">
 
-      <label>Numéro de téléphone</label>
+      <label>Email</label>
 
       <input
-        type="tel"
-        placeholder="Exemple : 07 00 00 00 00"
+        id="email"
+        type="email"
+        placeholder="Exemple : exemple@email.com"
         required
       >
 
       <label>Mot de passe</label>
 
       <input
+        id="password"
         type="password"
         placeholder="Votre mot de passe"
         required
@@ -142,9 +149,13 @@
 
     </form>
 
+    <p id="message"></p>
+
     <div class="links">
 
-      <a href="#">Mot de passe oublié ?</a>
+      <a href="#">
+        Mot de passe oublié ?
+      </a>
 
       <br>
 
@@ -168,5 +179,54 @@
   © 2026 AIDONS-NOUS VIVANTS
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+  const SUPABASE_URL = "https://wwmndbzifmlqpkbpcntz.supabase.co";
+
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_jnjVBvAwxelousFOy8UEzQ_CZ4mb86b";
+
+  const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+
+  document.getElementById("loginForm").addEventListener("submit", async function (e) {
+
+    e.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+
+    const password = document.getElementById("password").value;
+
+    const message = document.getElementById("message");
+
+    message.textContent = "Connexion en cours...";
+
+    const { error } = await supabaseClient.auth.signInWithPassword({
+
+      email: email,
+
+      password: password
+
+    });
+
+    if (error) {
+
+      message.textContent = "Erreur : " + error.message;
+
+      return;
+
+    }
+
+    message.textContent = "Connexion réussie !";
+
+    window.location.href = "dashboard.html";
+
+  });
+
+</script>
+
 </body>
-  </html>
+</html>
