@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Mon espace - AIDONS-NOUS VIVANTS</title>
 
   <style>
@@ -63,6 +62,78 @@
 
     .card h3 {
       margin-bottom: 15px;
+    }
+
+    .tontine-card {
+      border: 1px solid #e5e8ec;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .tontine-card h4 {
+      color: #0b6b4f;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .tontine-description {
+      color: #687282;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .tontine-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .info-item {
+      background: #f5f7fa;
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 13px;
+    }
+
+    .info-item strong {
+      display: block;
+      color: #172033;
+      margin-bottom: 3px;
+    }
+
+    .info-item span {
+      color: #687282;
+    }
+
+    .join-button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background: #0b6b4f;
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 9px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .loading {
+      text-align: center;
+      color: #687282;
+      padding: 10px;
+    }
+
+    .error-message {
+      background: #fff3f3;
+      color: #c62828;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.5;
     }
 
     .main-amount {
@@ -211,6 +282,20 @@
     <p id="memberEmail">Chargement de votre compte...</p>
   </div>
 
+  <!-- TONTINES DISPONIBLES -->
+
+  <div class="card">
+
+    <h3>💰 Tontines disponibles</h3>
+
+    <div id="tontinesList" class="loading">
+      Chargement des tontines...
+    </div>
+
+  </div>
+
+  <!-- MA TONTINE -->
+
   <div class="card">
 
     <h3>Ma tontine</h3>
@@ -246,6 +331,8 @@
 
   </div>
 
+  <!-- PROGRESSION -->
+
   <div class="card">
 
     <h3>Ma progression</h3>
@@ -260,6 +347,8 @@
 
   </div>
 
+  <!-- STATUT -->
+
   <div class="card">
 
     <h3>Statut</h3>
@@ -273,6 +362,8 @@
 
   </div>
 
+  <!-- DERNIER PAIEMENT -->
+
   <div class="card">
 
     <h3>Dernier paiement</h3>
@@ -283,6 +374,8 @@
     </div>
 
   </div>
+
+  <!-- ACTIONS RAPIDES -->
 
   <div class="card">
 
@@ -321,13 +414,16 @@
   <p>© 2026 — Ensemble, nous avançons.</p>
 </footer>
 
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
-  const SUPABASE_URL = "https://wwmndbzifmlqpkbpcntz.supabase.co";
+  const SUPABASE_URL =
+    "https://wwmndbzifmlqpkbpcntz.supabase.co";
 
-  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_jnjVBvAwxelousFOy8UEzQ_CZ4mb86b";
+  const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_jnjVBvAwxelousFOy8UEzQ_CZ4mb86b";
 
   const supabaseClient = supabase.createClient(
     SUPABASE_URL,
@@ -335,57 +431,226 @@
   );
 
 
+  // Vérifier que le membre est connecté
+
   async function checkUser() {
 
-    const { data, error } = await supabaseClient.auth.getUser();
+    const { data, error } =
+      await supabaseClient.auth.getUser();
 
     if (error || !data.user) {
 
       window.location.href = "connexion.html";
 
-      return;
+      return null;
     }
 
     document.getElementById("memberEmail").textContent =
       "Connecté avec : " + data.user.email;
+
+    return data.user;
   }
 
 
-  checkUser();
+  // Charger le profil du membre
 
-async function loadProfile() {
-  const { data: userData } = await supabaseClient.auth.getUser();
+  async function loadProfile() {
 
-  if (!userData.user) {
-    return;
+    const { data: userData } =
+      await supabaseClient.auth.getUser();
+
+    if (!userData.user) {
+      return;
+    }
+
+    const { data: profile, error } =
+      await supabaseClient
+        .from("profiles")
+        .select("Prenom, Nom")
+        .eq("Id", userData.user.id)
+        .single();
+
+    if (error) {
+
+      console.log(error);
+
+      return;
+    }
+
+    document.getElementById("welcomeMessage").textContent =
+      "Bonjour " + profile.Prenom + " 👋🏽";
   }
 
-  const { data: profile, error } = await supabaseClient
-    .from("profiles")
-    .select("Prenom, Nom")
-    .eq("Id", userData.user.id)
-    .single();
 
-  if (error) {
-    console.log(error);
-    return;
+  // Charger les tontines disponibles
+
+  async function loadTontines() {
+
+    const tontinesList =
+      document.getElementById("tontinesList");
+
+    const { data: tontines, error } =
+      await supabaseClient
+        .from("tontines")
+        .select(`
+          id,
+          nom,
+          description,
+          montant_prise,
+          cotisation,
+          frequence,
+          nombre_membres,
+          duree_jours,
+          penalite_par_jour,
+          date_debut,
+          heure_limite
+        `)
+        .order("created_at", {
+          ascending: false
+        });
+
+
+    if (error) {
+
+      console.log(error);
+
+      tontinesList.innerHTML = `
+        <div class="error-message">
+          Impossible de charger les tontines pour le moment.
+        </div>
+      `;
+
+      return;
+    }
+
+
+    if (!tontines || tontines.length === 0) {
+
+      tontinesList.innerHTML = `
+        <div class="loading">
+          Aucune tontine disponible pour le moment.
+        </div>
+      `;
+
+      return;
+    }
+
+
+    tontinesList.innerHTML = "";
+
+
+    tontines.forEach(function(tontine) {
+
+      const card =
+        document.createElement("div");
+
+      card.className = "tontine-card";
+
+
+      card.innerHTML = `
+
+        <h4>${tontine.nom || "Tontine"}</h4>
+
+        <p class="tontine-description">
+          ${tontine.description || ""}
+        </p>
+
+        <div class="tontine-info">
+
+          <div class="info-item">
+            <strong>💰 Prise</strong>
+            <span>
+              ${Number(tontine.montant_prise).toLocaleString("fr-FR")} FCFA
+            </span>
+          </div>
+
+          <div class="info-item">
+            <strong>💵 Cotisation</strong>
+            <span>
+              ${Number(tontine.cotisation).toLocaleString("fr-FR")} FCFA
+            </span>
+          </div>
+
+          <div class="info-item">
+            <strong>👥 Membres</strong>
+            <span>
+              ${tontine.nombre_membres}
+            </span>
+          </div>
+
+          <div class="info-item">
+            <strong>📅 Durée</strong>
+            <span>
+              ${tontine.duree_jours} jours
+            </span>
+          </div>
+
+          <div class="info-item">
+            <strong>⚠️ Pénalité</strong>
+            <span>
+              ${Number(tontine.penalite_par_jour).toLocaleString("fr-FR")} FCFA/jour
+            </span>
+          </div>
+
+          <div class="info-item">
+            <strong>⏰ Heure limite</strong>
+            <span>
+              ${tontine.heure_limite || "Non définie"}
+            </span>
+          </div>
+
+        </div>
+
+        <a
+          href="details-tontine.html?id=${tontine.id}"
+          class="join-button"
+        >
+          Voir cette tontine
+        </a>
+
+      `;
+
+
+      tontinesList.appendChild(card);
+
+    });
+
   }
 
-  document.getElementById("welcomeMessage").textContent =
-    "Bonjour " + profile.Prenom + " 👋🏽";
-}
 
-loadProfile();
-  document.getElementById("logoutButton").addEventListener("click", async function () {
+  // Déconnexion
 
-    await supabaseClient.auth.signOut();
+  document
+    .getElementById("logoutButton")
+    .addEventListener("click", async function() {
 
-    window.location.href = "connexion.html";
+      await supabaseClient.auth.signOut();
 
-  });
+      window.location.href = "connexion.html";
+
+    });
+
+
+  // Lancement
+
+  async function initDashboard() {
+
+    const user = await checkUser();
+
+    if (!user) {
+      return;
+    }
+
+    await loadProfile();
+
+    await loadTontines();
+
+  }
+
+
+  initDashboard();
 
 </script>
 
 </body>
 </html>
-
