@@ -512,15 +512,15 @@
 
     if (error) {
 
-      console.log(error);
+  console.log("ERREUR TONTINES :", error);
 
-      tontinesList.innerHTML = `
-        <div class="error-message">
-          Impossible de charger les tontines pour le moment.
-        </div>
-      `;
+  tontinesList.innerHTML = `
+    <div class="error-message">
+      Erreur Supabase : ${error.message}
+    </div>
+  `;
 
-      return;
+  return;
     }
 
 
