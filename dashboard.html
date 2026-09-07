@@ -493,17 +493,19 @@
       await supabaseClient
         .from("tontines")
         .select(`
-          id,
-          nom,
-          description,
-          montant_prise,
-          cotisation,
-          nombre_membres,
-          duree_jours,
-          penalite_par_jour,
-          date_debut,
-          heure_limite
-        `)
+  id,
+  nom,
+  description,
+  montant_prise,
+  cotisation,
+  frequence,
+  nombre_membres,
+  duree_jours,
+  penalite_par_jour,
+  date_debut,
+  heure_limite
+`)
+      
         .order("created_at", {
           ascending: false
         });
