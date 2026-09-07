@@ -11,132 +11,153 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: Arial, sans-serif;
     }
 
     body {
+      font-family: Arial, sans-serif;
       background: #f5f7fa;
-      color: #172033;
+      color: #222;
     }
 
     header {
-      background: #0b6b4f;
+      background: #0f766e;
       color: white;
-      padding: 20px;
+      text-align: center;
+      padding: 25px 15px;
     }
 
     header h1 {
-      font-size: 21px;
+      font-size: 24px;
+      margin-bottom: 8px;
     }
 
     header p {
-      margin-top: 6px;
-      font-size: 14px;
+      font-size: 15px;
     }
 
     .container {
-      max-width: 600px;
-      margin: auto;
-      padding: 20px 16px 35px;
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 0 15px;
     }
 
     .card {
       background: white;
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: 0 3px 14px rgba(0,0,0,0.07);
-    }
-
-    .title {
-      color: #0b6b4f;
-      font-size: 24px;
-      margin-bottom: 12px;
-    }
-
-    .description {
-      color: #687282;
-      line-height: 1.6;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
       margin-bottom: 20px;
     }
 
+    .card h2 {
+      color: #0f766e;
+      margin-bottom: 12px;
+      font-size: 23px;
+    }
+
+    .description {
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+
     .info {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 14px 0;
+      border-bottom: 1px solid #eee;
     }
 
-    .info-item {
-      background: #f5f7fa;
-      border-radius: 10px;
-      padding: 13px;
+    .info:last-child {
+      border-bottom: none;
     }
 
-    .info-item strong {
-      display: block;
-      margin-bottom: 5px;
-      font-size: 13px;
+    .label {
+      color: #666;
     }
 
-    .info-item span {
-      color: #687282;
-      font-size: 14px;
+    .value {
+      font-weight: bold;
+      text-align: right;
     }
 
     .button {
       display: block;
       width: 100%;
-      padding: 15px;
-      margin-top: 15px;
-      border-radius: 10px;
       text-align: center;
+      padding: 15px;
+      border-radius: 10px;
       text-decoration: none;
-      font-weight: bold;
       border: none;
       cursor: pointer;
       font-size: 16px;
+      font-weight: bold;
+      margin-top: 15px;
     }
 
     .primary {
-      background: #0b6b4f;
+      background: #0f766e;
       color: white;
     }
 
+    .primary:hover {
+      background: #0b5f59;
+    }
+
     .secondary {
-      border: 2px solid #0b6b4f;
-      color: #0b6b4f;
-      background: white;
+      background: #e5e7eb;
+      color: #222;
+    }
+
+    .secondary:hover {
+      background: #d1d5db;
     }
 
     .loading {
+      background: white;
+      padding: 30px;
       text-align: center;
-      color: #687282;
-      padding: 30px 10px;
+      border-radius: 15px;
     }
 
     .error {
-      background: #fff3f3;
-      color: #c62828;
-      padding: 15px;
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 20px;
       border-radius: 10px;
       line-height: 1.5;
     }
 
     .success {
-      background: #e7f6ef;
-      color: #0b6b4f;
-      padding: 15px;
+      background: #dcfce7;
+      color: #166534;
+      padding: 20px;
       border-radius: 10px;
+      line-height: 1.6;
       margin-top: 15px;
-      line-height: 1.5;
     }
 
     footer {
       text-align: center;
-      padding: 25px;
-      background: #172033;
-      color: white;
-      font-size: 13px;
+      padding: 30px 15px;
+      color: #777;
+      font-size: 14px;
+    }
+
+    @media (max-width: 500px) {
+      .card {
+        padding: 20px;
+      }
+
+      .info {
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .value {
+        text-align: left;
+      }
     }
   </style>
 </head>
@@ -181,41 +202,227 @@
   );
 
 
-  // Récupérer l'identifiant de la tontine dans l'adresse
-
+  // Récupérer l'identifiant de la tontine
   const urlParams = new URLSearchParams(window.location.search);
-
   const tontineId = urlParams.get("id");
 
 
-  // Charger la tontine
-
   async function loadTontine() {
 
-    const content =
-      document.getElementById("content");
+    const content = document.getElementById("content");
 
 
-    // Vérifier que le membre est connecté
-
-    const { data: userData, error: userError } =
-      await supabaseClient.auth.getUser();
+    // Vérifier si le membre est connecté
+    const {
+      data: userData,
+      error: userError
+    } = await supabaseClient.auth.getUser();
 
 
     if (userError || !userData.user) {
-
       window.location.href = "connexion.html";
+      return;
+    }
+
+
+    // Vérifier l'identifiant
+    if (!tontineId) {
+
+      content.innerHTML = `
+        <div class="error">
+          <strong>Tontine introuvable.</strong><br><br>
+          Aucun identifiant de tontine n'a été fourni.
+        </div>
+      `;
 
       return;
     }
 
 
-    // Vérifier qu'un ID de tontine existe
+    // Charger la tontine depuis Supabase
+    const {
+      data: tontine,
+      error
+    } = await supabaseClient
+      .from("tontines")
+      .select(`
+        id,
+        nom,
+        description,
+        montant_prise,
+        cotisation,
+        frequence,
+        nombre_membres,
+        duree_jours,
+        penalite_par_jour,
+        date_debut,
+        heure_limite
+      `)
+      .eq("id", tontineId)
+      .single();
 
-    if (!tontineId) {
+
+    // Gestion de l'erreur
+    if (error) {
+
+      console.log("ERREUR DETAILS TONTINE :", error);
 
       content.innerHTML = `
         <div class="error">
-          Tontine introuvable.
+          <strong>Impossible de charger la tontine.</strong><br><br>
+          ${error.message}
         </div>
       `;
+
+      return;
+    }
+
+
+    // Vérifier que la tontine existe
+    if (!tontine) {
+
+      content.innerHTML = `
+        <div class="error">
+          <strong>Tontine introuvable.</strong><br><br>
+          Cette tontine n'existe pas ou n'est plus disponible.
+        </div>
+      `;
+
+      return;
+    }
+
+
+    // Formater la date
+    let dateDebut = tontine.date_debut;
+
+    if (dateDebut) {
+
+      const date = new Date(dateDebut + "T00:00:00");
+
+      dateDebut = date.toLocaleDateString("fr-FR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+      });
+    }
+
+
+    // Formater l'heure
+    let heureLimite = tontine.heure_limite;
+
+    if (heureLimite) {
+      heureLimite = heureLimite.substring(0, 5);
+    }
+
+
+    // Afficher les informations
+    content.className = "";
+
+    content.innerHTML = `
+
+      <div class="card">
+
+        <h2>${tontine.nom}</h2>
+
+        <p class="description">
+          ${tontine.description || "Aucune description disponible."}
+        </p>
+
+        <div class="info">
+          <span class="label">💰 Montant de la prise</span>
+          <span class="value">
+            ${Number(tontine.montant_prise).toLocaleString("fr-FR")} F CFA
+          </span>
+        </div>
+
+        <div class="info">
+          <span class="label">💵 Cotisation</span>
+          <span class="value">
+            ${Number(tontine.cotisation).toLocaleString("fr-FR")} F CFA / jour
+          </span>
+        </div>
+
+        <div class="info">
+          <span class="label">🔄 Fréquence</span>
+          <span class="value">
+            ${tontine.frequence}
+          </span>
+        </div>
+
+        <div class="info">
+          <span class="label">👥 Nombre de membres</span>
+          <span class="value">
+            ${tontine.nombre_membres}
+          </span>
+        </div>
+
+        <div class="info">
+          <span class="label">📅 Durée</span>
+          <span class="value">
+            ${tontine.duree_jours} jours
+          </span>
+        </div>
+
+        <div class="info">
+          <span class="label">⚠️ Pénalité de retard</span>
+          <span class="value">
+            ${Number(tontine.penalite_par_jour).toLocaleString("fr-FR")} F CFA / jour
+          </span>
+        </div>
+
+        <div class="info">
+          <span class="label">📆 Date de début</span>
+          <span class="value">
+            ${dateDebut}
+          </span>
+        </div>
+
+        <div class="info">
+          <span class="label">🕕 Heure limite</span>
+          <span class="value">
+            ${heureLimite}
+          </span>
+        </div>
+
+        <button
+          class="button primary"
+          onclick="adhérer()">
+          📝 Adhérer à cette tontine
+        </button>
+
+      </div>
+
+      <div id="adhesionMessage"></div>
+    `;
+  }
+
+
+  // Action d'adhésion — prototype
+  function adhérer() {
+
+    const message =
+      document.getElementById("adhesionMessage");
+
+    message.innerHTML = `
+      <div class="success">
+        <strong>✅ Demande d'adhésion enregistrée.</strong><br><br>
+
+        La prochaine étape sera la vérification de votre identité
+        et la signature du contrat individuel d'adhésion.
+      </div>
+    `;
+
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: "smooth"
+    });
+  }
+
+
+  // Lancer le chargement
+  loadTontine();
+
+</script>
+
+</body>
+</html>
