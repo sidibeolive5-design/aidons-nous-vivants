@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Détails de la tontine - AIDONS-NOUS VIVANTS</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f5f7fa;
+      color: #172033;
+    }
+
+    header {
+      background: #0b6b4f;
+      color: white;
+      padding: 20px;
+    }
+
+    header h1 {
+      font-size: 21px;
+    }
+
+    header p {
+      margin-top: 6px;
+      font-size: 14px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px 16px 35px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 3px 14px rgba(0,0,0,0.07);
+    }
+
+    .title {
+      color: #0b6b4f;
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+
+    .description {
+      color: #687282;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .info-item {
+      background: #f5f7fa;
+      border-radius: 10px;
+      padding: 13px;
+    }
+
+    .info-item strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 13px;
+    }
+
+    .info-item span {
+      color: #687282;
+      font-size: 14px;
+    }
+
+    .button {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 10px;
+      text-align: center;
+      text-decoration: none;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .primary {
+      background: #0b6b4f;
+      color: white;
+    }
+
+    .secondary {
+      border: 2px solid #0b6b4f;
+      color: #0b6b4f;
+      background: white;
+    }
+
+    .loading {
+      text-align: center;
+      color: #687282;
+      padding: 30px 10px;
+    }
+
+    .error {
+      background: #fff3f3;
+      color: #c62828;
+      padding: 15px;
+      border-radius: 10px;
+      line-height: 1.5;
+    }
+
+    .success {
+      background: #e7f6ef;
+      color: #0b6b4f;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 15px;
+      line-height: 1.5;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      background: #172033;
+      color: white;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>AIDONS-NOUS VIVANTS</h1>
+  <p>Détails de la tontine</p>
+</header>
+
+<div class="container">
+
+  <div id="content" class="loading">
+    Chargement de la tontine...
+  </div>
+
+  <a href="dashboard.html" class="button secondary">
+    ← Retour à mon espace
+  </a>
+
+</div>
+
+<footer>
+  <p>AIDONS-NOUS VIVANTS</p>
+  <p>© 2026 — Ensemble, nous avançons.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+  const SUPABASE_URL =
+    "https://wwmndbzifmlqpkbpcntz.supabase.co";
+
+  const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_jnjVBvAwxelousFOy8UEzQ_CZ4mb86b";
+
+  const supabaseClient = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+
+
+  // Récupérer l'identifiant de la tontine dans l'adresse
+
+  const urlParams = new URLSearchParams(window.location.search);
+
+  const tontineId = urlParams.get("id");
+
+
+  // Charger la tontine
+
+  async function loadTontine() {
+
+    const content =
+      document.getElementById("content");
+
+
+    // Vérifier que le membre est connecté
+
+    const { data: userData, error: userError } =
+      await supabaseClient.auth.getUser();
+
+
+    if (userError || !userData.user) {
+
+      window.location.href = "connexion.html";
+
+      return;
+    }
+
+
+    // Vérifier qu'un ID de tontine existe
+
+    if (!tontineId) {
+
+      content.innerHTML = `
+        <div class="error">
+          Tontine introuvable.
+        </div>
+      `;
