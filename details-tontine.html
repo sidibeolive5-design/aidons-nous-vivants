@@ -172,50 +172,151 @@
      CHARGER LA TONTINE
      ========================= */
 
-  async function loadTontine() {
+async function loadTontine() {
 
-    if (!tontineId) {
-      content.innerHTML = `
-        <div class="error">
-          ❌ Aucune tontine sélectionnée.
-        </div>
-      `;
-      return;
-    }
+  content.innerHTML = `
+    <div class="loading">
+      ⏳ Connexion à la base de données...
+    </div>
+  `;
 
-    const {
-      data: tontine,
-      error
-    } = await supabaseClient
+  if (!tontineId) {
+    content.innerHTML = `
+      <div class="error">
+        ❌ Aucun identifiant de tontine dans l'URL.
+      </div>
+    `;
+    return;
+  }
+
+  try {
+
+    console.log("ID de la tontine :", tontineId);
+
+    const { data, error } = await supabaseClient
       .from("tontines")
       .select("*")
       .eq("id", tontineId)
       .maybeSingle();
 
+    console.log("Résultat Supabase :", data);
+    console.log("Erreur Supabase :", error);
+
     if (error) {
-      console.error(error);
-
       content.innerHTML = `
         <div class="error">
-          ❌ Impossible de charger la tontine.
+          ❌ Erreur Supabase
           <br><br>
-          ${escapeHtml(error.message)}
+          <strong>${escapeHtml(error.message)}</strong>
+          <br><br>
+          Code : ${escapeHtml(error.code || "-")}
         </div>
       `;
-
       return;
     }
 
-    if (!tontine) {
+    if (!data) {
       content.innerHTML = `
         <div class="error">
-          ❌ Cette tontine n'existe pas.
+          ❌ Tontine introuvable.
+          <br><br>
+          ID recherché :
+          <br>
+          ${escapeHtml(tontineId)}
         </div>
       `;
-
       return;
     }
 
+    const tontine = data;
+
+    content.innerHTML = `
+      <h2>${escapeHtml(tontine.nom || "Tontine")}</h2>
+
+      <div class="description">
+        ${escapeHtml(tontine.description || "Aucune description disponible.")}
+      </div>
+
+      <div class="info">
+
+        <div>
+          <span class="label">💰 Montant de la prise :</span><br>
+          <span class="value">
+            ${formatMoney(tontine.montant_prise)}
+          </span>
+        </div>
+
+        <div>
+          <span class="label">💵 Cotisation :</span><br>
+          <span class="value">
+            ${formatMoney(tontine.cotisation)}
+          </span>
+        </div>
+
+        <div>
+          <span class="label">📅 Fréquence :</span><br>
+          <span class="value">
+            ${escapeHtml(tontine.frequence || "-")}
+          </span>
+        </div>
+
+        <div>
+          <span class="label">👥 Nombre de membres :</span><br>
+          <span class="value">
+            ${tontine.nombre_membres ?? "-"}
+          </span>
+        </div>
+
+        <div>
+          <span class="label">⏱️ Durée :</span><br>
+          <span class="value">
+            ${tontine.duree_jours ?? "-"} jours
+          </span>
+        </div>
+
+        <div>
+          <span class="label">⚠️ Pénalité :</span><br>
+          <span class="value">
+            ${formatMoney(tontine.penalite_par_jour)}
+          </span>
+        </div>
+
+        <div>
+          <span class="label">📆 Date de début :</span><br>
+          <span class="value">
+            ${formatDate(tontine.date_debut)}
+          </span>
+        </div>
+
+        <div>
+          <span class="label">🕐 Heure limite :</span><br>
+          <span class="value">
+            ${escapeHtml(tontine.heure_limite || "-")}
+          </span>
+        </div>
+
+      </div>
+
+      <button id="adhesionBtn" onclick="adherer()">
+        📝 Adhérer à cette tontine
+      </button>
+
+      <div id="message"></div>
+    `;
+
+  } catch (err) {
+
+    console.error("Erreur inattendue :", err);
+
+    content.innerHTML = `
+      <div class="error">
+        ❌ Une erreur est survenue.
+        <br><br>
+        ${escapeHtml(err.message || String(err))}
+      </div>
+    `;
+  }
+      
 
     /* =========================
        AFFICHAGE
