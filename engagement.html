@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Engagement - AIDONS-NOUS VIVANTS</title>
+
+<style>
+body{margin:0;background:#f3f4f6;font-family:Arial;color:#222}
+header{background:#087f5b;color:white;text-align:center;padding:20px}
+main{max-width:800px;margin:20px auto;background:white;padding:25px;border-radius:12px}
+h2,h3{color:#087f5b}
+.box{background:#f8faf9;border:1px solid #ddd;padding:12px;margin:8px 0;border-radius:7px}
+.amount{text-align:center;background:#e8f8f2;padding:18px;border-radius:10px;font-size:25px;font-weight:bold;color:#087f5b}
+li{margin:10px 0}
+canvas{width:100%;height:180px;border:2px dashed #999;border-radius:8px;touch-action:none}
+button{border:0;padding:14px 20px;border-radius:8px;background:#087f5b;color:white;font-weight:bold;margin-top:12px;width:100%}
+.clear{background:#777}
+.success{display:none;background:#d1fae5;padding:15px;margin-top:15px;border-radius:8px;color:#065f46}
+small{color:#666}
+@media print{
+header,button,.no-print{display:none}
+main{margin:0;box-shadow:none}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>AIDONS-NOUS VIVANTS</h1>
+<p>Acte individuel d'engagement</p>
+</header>
+
+<main>
+
+<h2>Reconnaissance de réception des fonds</h2>
+
+<div class="box"><b>Membre :</b> <span id="nom">Non renseigné</span></div>
+<div class="box"><b>Téléphone :</b> <span id="tel">Non renseigné</span></div>
+<div class="box"><b>Cycle :</b> <span id="cycle">Non renseigné</span></div>
+<div class="box"><b>Position :</b> <span id="position">Non renseignée</span></div>
+
+<h3>Montant reçu</h3>
+
+<div class="amount" id="montant">0 FCFA</div>
+
+<div class="box">
+<b>Date :</b> <span id="date">Non renseignée</span><br>
+<b>Mode de paiement :</b> <span id="mode">Non renseigné</span><br>
+<b>Référence :</b> <span id="reference">Non renseignée</span>
+</div>
+
+<h3>Engagement du membre</h3>
+
+<p>
+Je reconnais avoir reçu intégralement le montant indiqué ci-dessus
+dans le cadre de ma participation à la tontine
+<strong>AIDONS-NOUS VIVANTS</strong>.
+</p>
+
+<p>
+Je reconnais que la réception de ma prise ne met pas fin à mes
+obligations. Je m'engage à continuer mes cotisations conformément
+au règlement du cycle jusqu'à l'accomplissement de mes obligations.
+</p>
+
+<ul>
+<li>Respecter les montants et échéances de cotisation.</li>
+<li>Régler les éventuelles pénalités prévues par le règlement.</li>
+<li>Respecter les règles de la tontine.</li>
+<li>Fournir des informations exactes à l'administration.</li>
+<li>Informer l'administration en cas de difficulté de paiement.</li>
+</ul>
+
+<h3>Confirmation</h3>
+
+<label class="no-print">
+<input type="checkbox" id="confirm">
+Je confirme avoir reçu les fonds et avoir compris mes obligations.
+</label>
+
+<h3>Signature du membre</h3>
+
+<canvas id="signature"></canvas>
+
+<button class="clear no-print" onclick="effacer()">Effacer la signature</button>
+
+<button class="no-print" onclick="valider()">
+CONFIRMER ET SIGNER
+</button>
+
+<div class="success" id="success">
+<strong>Engagement confirmé.</strong><br>
+Date et heure de signature :
+<span id="signatureDate"></span>
+<br><br>
+Vous pouvez maintenant enregistrer ce document en PDF.
+</div>
+
+<button id="pdf" class="no-print" style="display:none"
+onclick="window.print()">
+IMPRIMER / ENREGISTRER EN PDF
+</button>
+
+<hr>
+
+<small>
+Identifiant de l'engagement :
+<strong id="engagementId"></strong>
+<br>
+Version 1.0 — AIDONS-NOUS VIVANTS
+</small>
+
+</main>
+
+<script>
+
+const p=new URLSearchParams(location.search);
+
+function get(n){
+return p.get(n)||"Non renseigné";
+}
+
+document.getElementById("nom").textContent=get("nom");
+document.getElementById("tel").textContent=get("telephone");
+document.getElementById("cycle").textContent=get("cycle");
+document.getElementById("position").textContent=get("position");
+
+let montant=get("montant");
+if(!isNaN(Number(montant))){
+montant=Number(montant).toLocaleString("fr-FR")+" FCFA";
+}
+document.getElementById("montant").textContent=montant;
+
+document.getElementById("date").textContent=get("date");
+document.getElementById("mode").textContent=get("mode");
+document.getElementById("reference").textContent=get("reference");
+
+const id="AV-"+Date.now();
+document.getElementById("engagementId").textContent=id;
+
+
+/* Signature */
+
+const canvas=document.getElementById("signature");
+const ctx=canvas.getContext("2d");
+let dessin=false;
+let signe=false;
+
+function taille(){
+canvas.width=canvas.offsetWidth;
+canvas.height=180;
+ctx.lineWidth=2;
+ctx.lineCap="round";
+}
+
+taille();
+window.addEventListener("resize",taille);
+
+function pos(e){
+const r=canvas.getBoundingClientRect();
+const t=e.touches?e.touches[0]:e;
+return{x:t.clientX-r.left,y:t.clientY-r.top};
+}
+
+function debut(e){
+e.preventDefault();
+dessin=true;
+signe=true;
+let q=pos(e);
+ctx.beginPath();
+ctx.moveTo(q.x,q.y);
+}
+
+function tracer(e){
+if(!dessin)return;
+e.preventDefault();
+let q=pos(e);
+ctx.lineTo(q.x,q.y);
+ctx.stroke();
+}
+
+function fin(){
+dessin=false;
+}
+
+canvas.addEventListener("mousedown",debut);
+canvas.addEventListener("mousemove",tracer);
+canvas.addEventListener("mouseup",fin);
+
+canvas.addEventListener("touchstart",debut);
+canvas.addEventListener("touchmove",tracer);
+canvas.addEventListener("touchend",fin);
+
+function effacer(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+signe=false;
+}
+
+
+/* Validation */
+
+function valider(){
+
+if(!document.getElementById("confirm").checked){
+alert("Veuillez confirmer la réception des fonds.");
+return;
+}
+
+if(!signe){
+alert("Veuillez signer dans la zone prévue.");
+return;
+}
+
+let maintenant=new Date();
+
+document.getElementById("signatureDate").textContent=
+maintenant.toLocaleString("fr-FR");
+
+document.getElementById("success").style.display="block";
+
+document.getElementById("pdf").style.display="block";
+
+document.getElementById("confirm").disabled=true;
+
+alert("Votre engagement a été enregistré sur cet appareil.");
+}
+
+</script>
+
+</body>
+</html>
