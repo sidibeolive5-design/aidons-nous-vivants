@@ -6,22 +6,141 @@
 <title>Engagement - AIDONS-NOUS VIVANTS</title>
 
 <style>
-body{margin:0;background:#f3f4f6;font-family:Arial;color:#222}
-header{background:#087f5b;color:white;text-align:center;padding:20px}
-main{max-width:800px;margin:20px auto;background:white;padding:25px;border-radius:12px}
-h2,h3{color:#087f5b}
-.box{background:#f8faf9;border:1px solid #ddd;padding:12px;margin:8px 0;border-radius:7px}
-.amount{text-align:center;background:#e8f8f2;padding:18px;border-radius:10px;font-size:25px;font-weight:bold;color:#087f5b}
-li{margin:10px 0}
-canvas{width:100%;height:180px;border:2px dashed #999;border-radius:8px;touch-action:none}
-button{border:0;padding:14px 20px;border-radius:8px;background:#087f5b;color:white;font-weight:bold;margin-top:12px;width:100%}
-.clear{background:#777}
-.success{display:none;background:#d1fae5;padding:18px;margin-top:15px;border-radius:8px;color:#065f46}
-.warning{background:#fff7ed;padding:15px;border-radius:8px;color:#9a3412;margin:15px 0}
-small{color:#666}
+body{
+  margin:0;
+  background:#f3f4f6;
+  font-family:Arial,sans-serif;
+  color:#222;
+}
+
+header{
+  background:#087f5b;
+  color:white;
+  text-align:center;
+  padding:20px;
+}
+
+main{
+  max-width:800px;
+  margin:20px auto;
+  background:white;
+  padding:25px;
+  border-radius:12px;
+}
+
+h2,h3{
+  color:#087f5b;
+}
+
+.box{
+  background:#f8faf9;
+  border:1px solid #ddd;
+  padding:12px;
+  margin:8px 0;
+  border-radius:7px;
+}
+
+.amount{
+  text-align:center;
+  background:#e8f8f2;
+  padding:18px;
+  border-radius:10px;
+  font-size:25px;
+  font-weight:bold;
+  color:#087f5b;
+}
+
+li{
+  margin:10px 0;
+}
+
+canvas{
+  width:100%;
+  height:180px;
+  border:2px dashed #999;
+  border-radius:8px;
+  touch-action:none;
+  background:white;
+}
+
+button{
+  border:0;
+  padding:14px 20px;
+  border-radius:8px;
+  background:#087f5b;
+  color:white;
+  font-weight:bold;
+  margin-top:12px;
+  width:100%;
+  cursor:pointer;
+}
+
+button:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+}
+
+.clear{
+  background:#777;
+}
+
+.success{
+  display:none;
+  background:#d1fae5;
+  padding:18px;
+  margin-top:15px;
+  border-radius:8px;
+  color:#065f46;
+}
+
+.warning{
+  background:#fff7ed;
+  padding:15px;
+  border-radius:8px;
+  color:#9a3412;
+  margin:15px 0;
+}
+
+.error{
+  display:none;
+  background:#fee2e2;
+  padding:15px;
+  margin-top:15px;
+  border-radius:8px;
+  color:#991b1b;
+}
+
+small{
+  color:#666;
+}
+
+@media(max-width:600px){
+  main{
+    margin:10px;
+    padding:18px;
+  }
+
+  header h1{
+    font-size:22px;
+  }
+
+  .amount{
+    font-size:22px;
+  }
+}
+
 @media print{
-header,button,.no-print{display:none}
-main{margin:0;box-shadow:none}
+  header,
+  button,
+  .no-print,
+  .error{
+    display:none !important;
+  }
+
+  main{
+    margin:0;
+    box-shadow:none;
+  }
 }
 </style>
 </head>
@@ -29,8 +148,8 @@ main{margin:0;box-shadow:none}
 <body>
 
 <header>
-<h1>AIDONS-NOUS VIVANTS</h1>
-<p>Acte individuel d'engagement</p>
+  <h1>AIDONS-NOUS VIVANTS</h1>
+  <p>Acte individuel d'engagement</p>
 </header>
 
 <main>
@@ -43,26 +162,43 @@ Avant tout versement, vous devez prendre connaissance du présent
 engagement et le signer.
 </p>
 
-<div class="box"><b>Membre :</b> <span id="nom">Non renseigné</span></div>
-<div class="box"><b>Téléphone :</b> <span id="tel">Non renseigné</span></div>
-<div class="box"><b>Cycle :</b> <span id="cycle">Non renseigné</span></div>
-<div class="box"><b>Position :</b> <span id="position">Non renseignée</span></div>
+<div class="box">
+  <b>Membre :</b>
+  <span id="nom">Non renseigné</span>
+</div>
+
+<div class="box">
+  <b>Téléphone :</b>
+  <span id="tel">Non renseigné</span>
+</div>
+
+<div class="box">
+  <b>Cycle :</b>
+  <span id="cycle">Non renseigné</span>
+</div>
+
+<div class="box">
+  <b>Position :</b>
+  <span id="position">Non renseignée</span>
+</div>
 
 <h3>Montant de la prise</h3>
 
-<div class="amount" id="montant">0 FCFA</div>
+<div class="amount" id="montant">
+  0 FCFA
+</div>
 
 <div class="box">
-<b>Mode de versement prévu :</b>
-<span id="mode">Non renseigné</span>
+  <b>Mode de versement prévu :</b>
+  <span id="mode">Non renseigné</span>
 </div>
 
 <div class="warning">
-<strong>Important :</strong>
-La signature de cet engagement est effectuée
-<strong>avant le versement des fonds</strong>.
-Après réception et vérification de votre engagement signé,
-l'administration procédera au versement de votre prise.
+  <strong>Important :</strong>
+  La signature de cet engagement est effectuée
+  <strong>avant le versement des fonds</strong>.
+  Après réception et vérification de votre engagement signé,
+  l'administration procédera au versement de votre prise.
 </div>
 
 <h3>Engagement du membre</h3>
@@ -75,12 +211,12 @@ mes obligations jusqu'à la fin du cycle.
 </p>
 
 <ul>
-<li>Respecter les montants et échéances de cotisation.</li>
-<li>Continuer mes cotisations après réception de ma prise.</li>
-<li>Régler les éventuelles pénalités prévues par le règlement.</li>
-<li>Respecter les règles de fonctionnement de la tontine.</li>
-<li>Fournir des informations exactes à l'administration.</li>
-<li>Informer l'administration en cas de difficulté de paiement.</li>
+  <li>Respecter les montants et échéances de cotisation.</li>
+  <li>Continuer mes cotisations après réception de ma prise.</li>
+  <li>Régler les éventuelles pénalités prévues par le règlement.</li>
+  <li>Respecter les règles de fonctionnement de la tontine.</li>
+  <li>Fournir des informations exactes à l'administration.</li>
+  <li>Informer l'administration en cas de difficulté de paiement.</li>
 </ul>
 
 <p>
@@ -91,9 +227,9 @@ Je comprends que la réception future de ma prise ne mettra pas fin
 <h3>Confirmation</h3>
 
 <label class="no-print">
-<input type="checkbox" id="confirm">
-Je confirme avoir lu et compris cet engagement et j'accepte
-mes obligations dans le cadre de la tontine.
+  <input type="checkbox" id="confirm">
+  Je confirme avoir lu et compris cet engagement et j'accepte
+  mes obligations dans le cadre de la tontine.
 </label>
 
 <h3>Signature du membre</h3>
@@ -104,287 +240,618 @@ Signez dans la zone ci-dessous avec votre doigt ou votre souris.
 
 <canvas id="signature"></canvas>
 
-<button class="clear no-print" onclick="effacer()">
-Effacer la signature
+<button
+  class="clear no-print"
+  id="clearButton"
+  onclick="effacer()">
+  Effacer la signature
 </button>
 
-<button class="no-print" onclick="valider()">
-SIGNER MON ENGAGEMENT
+<button
+  class="no-print"
+  id="signButton"
+  onclick="valider()">
+  SIGNER MON ENGAGEMENT
 </button>
+
+<div class="error" id="errorBox"></div>
 
 <div class="success" id="success">
 
-<strong>✅ Engagement signé avec succès.</strong>
+  <strong>✅ Engagement signé avec succès.</strong>
 
-<br><br>
+  <br><br>
 
-Votre engagement a été enregistré.
+  Votre engagement a été enregistré.
 
-<br><br>
+  <br><br>
 
-<strong>Statut :</strong>
-En attente de vérification et de versement.
+  <strong>Statut :</strong>
+  En attente de vérification et de versement.
 
-<br><br>
+  <br><br>
 
-L'administration de la tontine va maintenant vérifier votre
-engagement avant de procéder au versement de votre prise.
+  L'administration de la tontine va maintenant vérifier votre
+  engagement avant de procéder au versement de votre prise.
 
-<br><br>
+  <br><br>
 
-<strong>Date et heure :</strong>
-<span id="signatureDate"></span>
+  <strong>Date et heure :</strong>
+  <span id="signatureDate"></span>
 
-<br><br>
+  <br><br>
 
-<strong>Référence :</strong>
-<span id="engagementId"></span>
+  <strong>Référence :</strong>
+  <span id="engagementId"></span>
 
 </div>
 
-<button id="pdf" class="no-print"
-style="display:none;background:#334155"
-onclick="window.print()">
+<button
+  id="pdf"
+  class="no-print"
+  style="display:none;background:#334155"
+  onclick="window.print()">
 
-ENREGISTRER L'ENGAGEMENT EN PDF
+  ENREGISTRER L'ENGAGEMENT EN PDF
 
 </button>
 
 <hr>
 
 <small>
-Référence de l'engagement :
-<strong id="idBas"></strong>
-<br>
-AIDONS-NOUS VIVANTS — Version 2.0
+  Référence de l'engagement :
+  <strong id="idBas"></strong>
+  <br>
+  AIDONS-NOUS VIVANTS — Version 2.0
 </small>
 
 </main>
 
+<!-- SUPABASE -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 
-const p=new URLSearchParams(location.search);
+/* ==========================================
+   CONNEXION SUPABASE
+========================================== */
+
+const SUPABASE_URL =
+  "https://wwmndbzifmlqpkbpcntz.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+  "sb_publishable_jnjVBvAwxelousFOy8UEzQ_CZ4mb86b";
+
+const supabaseClient =
+  supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+
+
+/* ==========================================
+   INFORMATIONS DU MEMBRE
+========================================== */
+
+const p = new URLSearchParams(location.search);
 
 function get(n){
-return p.get(n)||"Non renseigné";
+  return p.get(n) || "Non renseigné";
 }
 
+document.getElementById("nom").textContent =
+  get("nom");
 
-/* Informations du membre */
+document.getElementById("tel").textContent =
+  get("telephone");
 
-document.getElementById("nom").textContent=get("nom");
-document.getElementById("tel").textContent=get("telephone");
-document.getElementById("cycle").textContent=get("cycle");
-document.getElementById("position").textContent=get("position");
-document.getElementById("mode").textContent=get("mode");
+document.getElementById("cycle").textContent =
+  get("cycle");
+
+document.getElementById("position").textContent =
+  get("position");
+
+document.getElementById("mode").textContent =
+  get("mode");
 
 
-/* Montant */
+/* ==========================================
+   MONTANT
+========================================== */
 
-let montant=get("montant");
+const montantBrut = get("montant");
 
-if(!isNaN(Number(montant))){
-montant=Number(montant).toLocaleString("fr-FR")+" FCFA";
+let montantAffichage = montantBrut;
+
+if(
+  montantBrut !== "Non renseigné" &&
+  !isNaN(Number(montantBrut))
+){
+  montantAffichage =
+    Number(montantBrut).toLocaleString("fr-FR")
+    + " FCFA";
 }
 
-document.getElementById("montant").textContent=montant;
+document.getElementById("montant").textContent =
+  montantAffichage;
 
 
-/* Référence unique */
+/* ==========================================
+   RÉFÉRENCE TEMPORAIRE
+========================================== */
 
-const id="AV-"+Date.now();
+const referenceTemp =
+  "AV-" + Date.now();
 
-document.getElementById("engagementId").textContent=id;
-document.getElementById("idBas").textContent=id;
+document.getElementById("engagementId").textContent =
+  referenceTemp;
+
+document.getElementById("idBas").textContent =
+  referenceTemp;
 
 
-/* Signature */
+/* ==========================================
+   SIGNATURE
+========================================== */
 
-const canvas=document.getElementById("signature");
-const ctx=canvas.getContext("2d");
+const canvas =
+  document.getElementById("signature");
 
-let dessin=false;
-let signe=false;
+const ctx =
+  canvas.getContext("2d");
+
+let dessin = false;
+let signe = false;
+
 
 function taille(){
 
-canvas.width=canvas.offsetWidth;
-canvas.height=180;
+  const ancienneImage =
+    canvas.width > 0 && canvas.height > 0
+      ? canvas.toDataURL()
+      : null;
 
-ctx.lineWidth=2;
-ctx.lineCap="round";
-ctx.lineJoin="round";
+  canvas.width =
+    canvas.offsetWidth;
+
+  canvas.height = 180;
+
+  ctx.lineWidth = 2;
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
 
 }
+
 
 taille();
 
-window.addEventListener("resize",taille);
+window.addEventListener(
+  "resize",
+  taille
+);
 
+
+/* ==========================================
+   POSITION DU DOIGT / SOURIS
+========================================== */
 
 function position(e){
 
-const r=canvas.getBoundingClientRect();
+  const r =
+    canvas.getBoundingClientRect();
 
-const t=e.touches ? e.touches[0] : e;
+  const t =
+    e.touches
+      ? e.touches[0]
+      : e;
 
-return{
-x:t.clientX-r.left,
-y:t.clientY-r.top
-};
-
+  return {
+    x: t.clientX - r.left,
+    y: t.clientY - r.top
+  };
 }
 
+
+/* ==========================================
+   DÉBUT SIGNATURE
+========================================== */
 
 function debut(e){
 
-e.preventDefault();
+  e.preventDefault();
 
-dessin=true;
-signe=true;
+  dessin = true;
+  signe = true;
 
-const q=position(e);
+  const q =
+    position(e);
 
-ctx.beginPath();
-ctx.moveTo(q.x,q.y);
+  ctx.beginPath();
 
+  ctx.moveTo(
+    q.x,
+    q.y
+  );
 }
 
+
+/* ==========================================
+   TRACER
+========================================== */
 
 function tracer(e){
 
-if(!dessin)return;
+  if(!dessin) return;
 
-e.preventDefault();
+  e.preventDefault();
 
-const q=position(e);
+  const q =
+    position(e);
 
-ctx.lineTo(q.x,q.y);
-ctx.stroke();
+  ctx.lineTo(
+    q.x,
+    q.y
+  );
 
+  ctx.stroke();
 }
 
+
+/* ==========================================
+   FIN
+========================================== */
 
 function fin(){
 
-dessin=false;
-
+  dessin = false;
 }
 
 
-canvas.addEventListener("mousedown",debut);
-canvas.addEventListener("mousemove",tracer);
-canvas.addEventListener("mouseup",fin);
-canvas.addEventListener("mouseleave",fin);
+/* Souris */
 
-canvas.addEventListener("touchstart",debut);
-canvas.addEventListener("touchmove",tracer);
-canvas.addEventListener("touchend",fin);
+canvas.addEventListener(
+  "mousedown",
+  debut
+);
 
+canvas.addEventListener(
+  "mousemove",
+  tracer
+);
+
+canvas.addEventListener(
+  "mouseup",
+  fin
+);
+
+canvas.addEventListener(
+  "mouseleave",
+  fin
+);
+
+
+/* Téléphone */
+
+canvas.addEventListener(
+  "touchstart",
+  debut,
+  {passive:false}
+);
+
+canvas.addEventListener(
+  "touchmove",
+  tracer,
+  {passive:false}
+);
+
+canvas.addEventListener(
+  "touchend",
+  fin
+);
+
+
+/* ==========================================
+   EFFACER
+========================================== */
 
 function effacer(){
 
-ctx.clearRect(
-0,
-0,
-canvas.width,
-canvas.height
-);
+  ctx.clearRect(
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
 
-signe=false;
-
+  signe = false;
 }
 
 
-/* Validation */
+/* ==========================================
+   AFFICHAGE ERREUR
+========================================== */
 
-function valider(){
+function afficherErreur(message){
 
-const confirmation=
-document.getElementById("confirm");
+  const box =
+    document.getElementById(
+      "errorBox"
+    );
 
+  box.textContent = message;
 
-if(!confirmation.checked){
+  box.style.display = "block";
 
-alert(
-"Veuillez confirmer que vous avez lu et accepté votre engagement."
-);
-
-return;
-
+  window.scrollTo({
+    top: box.offsetTop - 30,
+    behavior: "smooth"
+  });
 }
 
 
-if(!signe){
+/* ==========================================
+   VALIDATION
+========================================== */
 
-alert(
-"Veuillez signer dans la zone prévue."
-);
+async function valider(){
 
-return;
+  const confirmation =
+    document.getElementById(
+      "confirm"
+    );
 
-}
+  const bouton =
+    document.getElementById(
+      "signButton"
+    );
 
+  const clearButton =
+    document.getElementById(
+      "clearButton"
+    );
 
-const maintenant=new Date();
+  const errorBox =
+    document.getElementById(
+      "errorBox"
+    );
 
-
-document.getElementById("signatureDate").textContent=
-maintenant.toLocaleString("fr-FR");
-
-
-document.getElementById("success").style.display="block";
-
-document.getElementById("pdf").style.display="block";
-
-confirmation.disabled=true;
-
-
-/* Empêcher une nouvelle modification */
-
-document.querySelector(".clear").disabled=true;
-
-
-/* Enregistrer localement */
-
-const engagement={
-
-id:id,
-
-nom:get("nom"),
-
-telephone:get("telephone"),
-
-cycle:get("cycle"),
-
-position:get("position"),
-
-montant:get("montant"),
-
-mode:get("mode"),
-
-dateSignature:maintenant.toISOString(),
-
-signature:canvas.toDataURL("image/png"),
-
-statut:"EN_ATTENTE_VERIFICATION"
-
-};
+  errorBox.style.display =
+    "none";
 
 
-localStorage.setItem(
-"engagement_"+id,
-JSON.stringify(engagement)
-);
+  /* Vérification confirmation */
+
+  if(!confirmation.checked){
+
+    alert(
+      "Veuillez confirmer que vous avez lu et accepté votre engagement."
+    );
+
+    return;
+  }
 
 
-alert(
-"Votre engagement a été signé. Votre demande est maintenant en attente de vérification et de versement."
-);
+  /* Vérification signature */
+
+  if(!signe){
+
+    alert(
+      "Veuillez signer dans la zone prévue."
+    );
+
+    return;
+  }
+
+
+  /* Désactiver pendant l'enregistrement */
+
+  bouton.disabled = true;
+
+  clearButton.disabled = true;
+
+  bouton.textContent =
+    "ENREGISTREMENT EN COURS...";
+
+
+  const maintenant =
+    new Date();
+
+
+  /* Image de signature */
+
+  const signature =
+    canvas.toDataURL(
+      "image/png"
+    );
+
+
+  /* ==========================================
+     ENREGISTREMENT DANS SUPABASE
+  ========================================== */
+
+  const { data, error } =
+    await supabaseClient
+      .from("engagements")
+      .insert({
+
+        nom:
+          get("nom"),
+
+        telephone:
+          get("telephone"),
+
+        cycle:
+          get("cycle"),
+
+        position:
+          get("position"),
+
+        montant:
+          (
+            montantBrut !== "Non renseigné" &&
+            !isNaN(Number(montantBrut))
+          )
+            ? Number(montantBrut)
+            : null,
+
+        mode:
+          get("mode"),
+
+        signature:
+          signature,
+
+        date_signature:
+          maintenant.toISOString(),
+
+        statut:
+          "EN_ATTENTE_VERIFICATION"
+
+      })
+      .select()
+      .single();
+
+
+  /* ==========================================
+     ERREUR SUPABASE
+  ========================================== */
+
+  if(error){
+
+    console.error(
+      "Erreur Supabase :",
+      error
+    );
+
+    bouton.disabled = false;
+
+    clearButton.disabled = false;
+
+    bouton.textContent =
+      "SIGNER MON ENGAGEMENT";
+
+
+    afficherErreur(
+      "Impossible d'enregistrer votre engagement pour le moment. Veuillez réessayer."
+    );
+
+    return;
+  }
+
+
+  /* ==========================================
+     SUCCÈS
+  ========================================== */
+
+  const vraieReference =
+    data.id;
+
+
+  document.getElementById(
+    "signatureDate"
+  ).textContent =
+    maintenant.toLocaleString(
+      "fr-FR"
+    );
+
+
+  document.getElementById(
+    "engagementId"
+  ).textContent =
+    vraieReference;
+
+
+  document.getElementById(
+    "idBas"
+  ).textContent =
+    vraieReference;
+
+
+  document.getElementById(
+    "success"
+  ).style.display =
+    "block";
+
+
+  document.getElementById(
+    "pdf"
+  ).style.display =
+    "block";
+
+
+  confirmation.disabled =
+    true;
+
+
+  bouton.disabled =
+    true;
+
+  clearButton.disabled =
+    true;
+
+
+  bouton.textContent =
+    "ENGAGEMENT SIGNÉ";
+
+
+  /* ==========================================
+     SAUVEGARDE LOCALE DE SECOURS
+  ========================================== */
+
+  const engagement = {
+
+    id:
+      vraieReference,
+
+    nom:
+      get("nom"),
+
+    telephone:
+      get("telephone"),
+
+    cycle:
+      get("cycle"),
+
+    position:
+      get("position"),
+
+    montant:
+      montantBrut,
+
+    mode:
+      get("mode"),
+
+    dateSignature:
+      maintenant.toISOString(),
+
+    signature:
+      signature,
+
+    statut:
+      "EN_ATTENTE_VERIFICATION"
+
+  };
+
+
+  localStorage.setItem(
+    "engagement_" + vraieReference,
+    JSON.stringify(
+      engagement
+    )
+  );
+
+
+  /* ==========================================
+     MESSAGE FINAL
+  ========================================== */
+
+  alert(
+    "Votre engagement a été signé et enregistré.\n\n" +
+    "Votre demande est maintenant en attente de vérification et de versement."
+  );
 
 }
 
 </script>
 
 </body>
-</html>
+        </html>
