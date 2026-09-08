@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
 
 <meta charset="UTF-8">
@@ -117,6 +118,7 @@ main{
   padding:20px;
   border-radius:12px;
   line-height:1.5;
+  word-break:break-word;
 }
 
 .success{
@@ -126,6 +128,16 @@ main{
   border-radius:12px;
   margin-top:15px;
   line-height:1.5;
+}
+
+.debug{
+  background:#fff7ed;
+  color:#9a3412;
+  padding:15px;
+  border-radius:10px;
+  margin-top:15px;
+  font-size:14px;
+  word-break:break-word;
 }
 
 footer{
@@ -160,7 +172,9 @@ footer{
 
 </head>
 
+
 <body>
+
 
 <header>
 
@@ -193,24 +207,72 @@ footer{
 </footer>
 
 
-<!-- ================================
+<!-- =====================================
      SUPABASE
-================================ -->
+===================================== -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 
 <script>
 
-/* ================================
-   CONNEXION SUPABASE
-================================ */
+/* =====================================
+   CONFIGURATION SUPABASE
+===================================== */
 
 const SUPABASE_URL =
   "https://wwmndbzifmlqpkbpcntz.supabase.co";
 
 const SUPABASE_PUBLISHABLE_KEY =
   "sb_publishable_jnjVBvAwxelousFOy8UEzQ_CZ4mb86b";
+
+
+/* =====================================
+   VÉRIFIER QUE SUPABASE EST CHARGÉ
+===================================== */
+
+const content =
+  document.getElementById("content");
+
+
+if(
+  typeof supabase === "undefined"
+){
+
+  content.innerHTML = `
+
+    <div class="error">
+
+      <strong>
+        ❌ Supabase ne s'est pas chargé
+      </strong>
+
+      <br><br>
+
+      La bibliothèque Supabase n'est pas
+      disponible sur cette page.
+
+      <div class="debug">
+
+        Vérifie ta connexion Internet puis
+        recharge la page.
+
+      </div>
+
+    </div>
+
+  `;
+
+  throw new Error(
+    "Supabase JS non chargé."
+  );
+
+}
+
+
+/* =====================================
+   CRÉER LA CONNEXION SUPABASE
+===================================== */
 
 const supabaseClient =
   supabase.createClient(
@@ -219,9 +281,9 @@ const supabaseClient =
   );
 
 
-/* ================================
-   RÉCUPÉRER L'ID
-================================ */
+/* =====================================
+   RÉCUPÉRER L'ID DANS L'URL
+===================================== */
 
 const urlParams =
   new URLSearchParams(
@@ -232,19 +294,26 @@ const tontineId =
   urlParams.get("id");
 
 
-/* ================================
+/* =====================================
    CHARGER LA TONTINE
-================================ */
+===================================== */
 
 async function loadTontine(){
 
-  const content =
-    document.getElementById("content");
-
-
   try{
 
-    /* Vérifier l'ID */
+    /* Vérification de l'élément HTML */
+
+    if(!content){
+
+      throw new Error(
+        "L'élément #content est introuvable."
+      );
+
+    }
+
+
+    /* Vérification de l'ID */
 
     if(!tontineId){
 
@@ -253,23 +322,31 @@ async function loadTontine(){
         <div class="error">
 
           <strong>
-            ❌ ID manquant
+            ❌ ID de tontine manquant
           </strong>
 
           <br><br>
 
-          Aucun identifiant de tontine
-          n'est présent dans l'adresse.
+          L'adresse de cette page ne contient
+          aucun identifiant de tontine.
+
+          <div class="debug">
+
+            URL actuelle :<br>
+            ${window.location.href}
+
+          </div>
 
         </div>
 
       `;
 
       return;
+
     }
 
 
-    /* Affichage chargement */
+    /* Affichage du chargement */
 
     content.innerHTML = `
 
@@ -277,19 +354,31 @@ async function loadTontine(){
 
         🔄 Recherche de la tontine...
 
+        <br><br>
+
+        ID : ${tontineId}
+
       </div>
 
     `;
 
 
-    /* ================================
-       REQUÊTE SUPABASE
-    ================================ */
+    console.log(
+      "ID DE LA TONTINE :",
+      tontineId
+    );
 
-    const {
-      data: tontine,
-      error: tontineError
-    } =
+
+    console.log(
+      "Recherche dans Supabase..."
+    );
+
+
+    /* =====================================
+       REQUÊTE SUPABASE
+    ===================================== */
+
+    const result =
       await supabaseClient
         .from("tontines")
         .select("*")
@@ -297,9 +386,22 @@ async function loadTontine(){
         .maybeSingle();
 
 
-    /* ================================
+    console.log(
+      "RÉSULTAT SUPABASE :",
+      result
+    );
+
+
+    const tontine =
+      result.data;
+
+    const tontineError =
+      result.error;
+
+
+    /* =====================================
        ERREUR SUPABASE
-    ================================ */
+    ===================================== */
 
     if(tontineError){
 
@@ -308,29 +410,48 @@ async function loadTontine(){
         tontineError
       );
 
+
       content.innerHTML = `
 
         <div class="error">
 
           <strong>
-            ❌ Erreur lors du chargement
+            ❌ Supabase a retourné une erreur
           </strong>
 
           <br><br>
 
-          ${tontineError.message}
+          ${tontineError.message || "Erreur inconnue"}
+
+          <div class="debug">
+
+            <strong>Code :</strong>
+            ${tontineError.code || "Non indiqué"}
+
+            <br><br>
+
+            <strong>Détails :</strong>
+            ${tontineError.details || "Non indiqués"}
+
+            <br><br>
+
+            <strong>Hint :</strong>
+            ${tontineError.hint || "Aucun"}
+
+          </div>
 
         </div>
 
       `;
 
       return;
+
     }
 
 
-    /* ================================
-       TONTINE INTROUVABLE
-    ================================ */
+    /* =====================================
+       AUCUNE TONTINE TROUVÉE
+    ===================================== */
 
     if(!tontine){
 
@@ -344,28 +465,35 @@ async function loadTontine(){
 
           <br><br>
 
-          L'identifiant fourni ne correspond
-          à aucune tontine accessible.
+          Aucune tontine ne correspond
+          à cet identifiant.
 
-          <br><br>
+          <div class="debug">
 
-          <strong>
-            ID :
-          </strong>
+            <strong>ID recherché :</strong><br>
 
-          ${tontineId}
+            ${tontineId}
+
+          </div>
 
         </div>
 
       `;
 
       return;
+
     }
 
 
-    /* ================================
+    console.log(
+      "TONTINE TROUVÉE :",
+      tontine
+    );
+
+
+    /* =====================================
        DATE DE DÉBUT
-    ================================ */
+    ===================================== */
 
     let dateDebut =
       tontine.date_debut ||
@@ -396,9 +524,9 @@ async function loadTontine(){
     }
 
 
-    /* ================================
+    /* =====================================
        HEURE LIMITE
-    ================================ */
+    ===================================== */
 
     let heureLimite =
       tontine.heure_limite;
@@ -432,9 +560,9 @@ async function loadTontine(){
     }
 
 
-    /* ================================
+    /* =====================================
        MONTANT PRISE
-    ================================ */
+    ===================================== */
 
     const montantPrise =
       Number(
@@ -444,9 +572,9 @@ async function loadTontine(){
       );
 
 
-    /* ================================
+    /* =====================================
        COTISATION
-    ================================ */
+    ===================================== */
 
     const cotisation =
       Number(
@@ -456,9 +584,9 @@ async function loadTontine(){
       );
 
 
-    /* ================================
+    /* =====================================
        PÉNALITÉ
-    ================================ */
+    ===================================== */
 
     const penalite =
       Number(
@@ -468,16 +596,18 @@ async function loadTontine(){
       );
 
 
-    /* ================================
-       AFFICHER LA TONTINE
-    ================================ */
+    /* =====================================
+       AFFICHAGE
+    ===================================== */
 
     content.innerHTML = `
 
       <div class="card">
 
         <h2>
+
           ${tontine.nom || "Tontine"}
+
         </h2>
 
 
@@ -569,7 +699,6 @@ async function loadTontine(){
               tontine.duree_jours ||
               "Non définie"
             }
-
             jours
 
           </span>
@@ -653,7 +782,7 @@ async function loadTontine(){
       <div class="error">
 
         <strong>
-          ❌ Erreur
+          ❌ Erreur JavaScript
         </strong>
 
         <br><br>
@@ -662,6 +791,20 @@ async function loadTontine(){
           error.message ||
           "Une erreur inconnue est survenue."
         }
+
+        <div class="debug">
+
+          <strong>URL :</strong><br>
+
+          ${window.location.href}
+
+          <br><br>
+
+          <strong>ID :</strong><br>
+
+          ${tontineId || "Aucun"}
+
+        </div>
 
       </div>
 
@@ -672,9 +815,9 @@ async function loadTontine(){
 }
 
 
-/* ================================
+/* =====================================
    ADHÉSION
-================================ */
+===================================== */
 
 async function adherer(){
 
@@ -687,13 +830,11 @@ async function adherer(){
   if(!message){
 
     return;
+
   }
 
 
   try{
-
-    /* Vérifier la connexion uniquement
-       au moment de l'adhésion */
 
     const {
       data,
@@ -728,10 +869,9 @@ async function adherer(){
       `;
 
       return;
+
     }
 
-
-    /* Membre connecté */
 
     message.innerHTML = `
 
@@ -746,16 +886,23 @@ async function adherer(){
         Votre demande est prête
         à être enregistrée.
 
+        <br><br>
+
+        La prochaine étape sera la vérification
+        de votre identité et la signature
+        du contrat individuel.
+
       </div>
 
     `;
 
   }
 
+
   catch(error){
 
     console.error(
-      "Erreur adhésion :",
+      "ERREUR ADHÉSION :",
       error
     );
 
@@ -765,7 +912,7 @@ async function adherer(){
       <div class="error">
 
         <strong>
-          ❌ Une erreur est survenue
+          ❌ Erreur lors de l'adhésion
         </strong>
 
         <br><br>
@@ -784,13 +931,15 @@ async function adherer(){
 }
 
 
-/* ================================
+/* =====================================
    LANCEMENT
-================================ */
+===================================== */
 
 loadTontine();
 
 </script>
 
+
 </body>
-  </html>
+
+</html>
