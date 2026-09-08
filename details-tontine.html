@@ -305,13 +305,14 @@ async function loadTontine() {
 
   // Heure
 
-  let heureLimite =
-    tontine.heure_limite;
+  let heureLimite = tontine.heure_limite;
 
-  if (heureLimite) {
-
-    heureLimite =
-      heureLimite.substring(0, 5);
+if (heureLimite === true) {
+  heureLimite = "18:00";
+} else if (heureLimite === false || heureLimite === null) {
+  heureLimite = "Non définie";
+} else {
+  heureLimite = String(heureLimite).substring(0, 5);
   }
 
 
