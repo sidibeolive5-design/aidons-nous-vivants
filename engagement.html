@@ -16,7 +16,8 @@ li{margin:10px 0}
 canvas{width:100%;height:180px;border:2px dashed #999;border-radius:8px;touch-action:none}
 button{border:0;padding:14px 20px;border-radius:8px;background:#087f5b;color:white;font-weight:bold;margin-top:12px;width:100%}
 .clear{background:#777}
-.success{display:none;background:#d1fae5;padding:15px;margin-top:15px;border-radius:8px;color:#065f46}
+.success{display:none;background:#d1fae5;padding:18px;margin-top:15px;border-radius:8px;color:#065f46}
+.warning{background:#fff7ed;padding:15px;border-radius:8px;color:#9a3412;margin:15px 0}
 small{color:#666}
 @media print{
 header,button,.no-print{display:none}
@@ -34,82 +35,128 @@ main{margin:0;box-shadow:none}
 
 <main>
 
-<h2>Reconnaissance de réception des fonds</h2>
+<h2>Engagement avant versement</h2>
+
+<p>
+Votre demande de prise est prête à être enregistrée.
+Avant tout versement, vous devez prendre connaissance du présent
+engagement et le signer.
+</p>
 
 <div class="box"><b>Membre :</b> <span id="nom">Non renseigné</span></div>
 <div class="box"><b>Téléphone :</b> <span id="tel">Non renseigné</span></div>
 <div class="box"><b>Cycle :</b> <span id="cycle">Non renseigné</span></div>
 <div class="box"><b>Position :</b> <span id="position">Non renseignée</span></div>
 
-<h3>Montant reçu</h3>
+<h3>Montant de la prise</h3>
 
 <div class="amount" id="montant">0 FCFA</div>
 
 <div class="box">
-<b>Date :</b> <span id="date">Non renseignée</span><br>
-<b>Mode de paiement :</b> <span id="mode">Non renseigné</span><br>
-<b>Référence :</b> <span id="reference">Non renseignée</span>
+<b>Mode de versement prévu :</b>
+<span id="mode">Non renseigné</span>
+</div>
+
+<div class="warning">
+<strong>Important :</strong>
+La signature de cet engagement est effectuée
+<strong>avant le versement des fonds</strong>.
+Après réception et vérification de votre engagement signé,
+l'administration procédera au versement de votre prise.
 </div>
 
 <h3>Engagement du membre</h3>
 
 <p>
-Je reconnais avoir reçu intégralement le montant indiqué ci-dessus
-dans le cadre de ma participation à la tontine
-<strong>AIDONS-NOUS VIVANTS</strong>.
-</p>
-
-<p>
-Je reconnais que la réception de ma prise ne met pas fin à mes
-obligations. Je m'engage à continuer mes cotisations conformément
-au règlement du cycle jusqu'à l'accomplissement de mes obligations.
+Je soussigné(e), membre de la tontine
+<strong>AIDONS-NOUS VIVANTS</strong>, reconnais avoir pris connaissance
+des conditions applicables à ma participation et m'engage à respecter
+mes obligations jusqu'à la fin du cycle.
 </p>
 
 <ul>
 <li>Respecter les montants et échéances de cotisation.</li>
+<li>Continuer mes cotisations après réception de ma prise.</li>
 <li>Régler les éventuelles pénalités prévues par le règlement.</li>
-<li>Respecter les règles de la tontine.</li>
+<li>Respecter les règles de fonctionnement de la tontine.</li>
 <li>Fournir des informations exactes à l'administration.</li>
 <li>Informer l'administration en cas de difficulté de paiement.</li>
 </ul>
+
+<p>
+Je comprends que la réception future de ma prise ne mettra pas fin
+à mes obligations de cotisation.
+</p>
 
 <h3>Confirmation</h3>
 
 <label class="no-print">
 <input type="checkbox" id="confirm">
-Je confirme avoir reçu les fonds et avoir compris mes obligations.
+Je confirme avoir lu et compris cet engagement et j'accepte
+mes obligations dans le cadre de la tontine.
 </label>
 
 <h3>Signature du membre</h3>
 
+<p>
+Signez dans la zone ci-dessous avec votre doigt ou votre souris.
+</p>
+
 <canvas id="signature"></canvas>
 
-<button class="clear no-print" onclick="effacer()">Effacer la signature</button>
+<button class="clear no-print" onclick="effacer()">
+Effacer la signature
+</button>
 
 <button class="no-print" onclick="valider()">
-CONFIRMER ET SIGNER
+SIGNER MON ENGAGEMENT
 </button>
 
 <div class="success" id="success">
-<strong>Engagement confirmé.</strong><br>
-Date et heure de signature :
-<span id="signatureDate"></span>
+
+<strong>✅ Engagement signé avec succès.</strong>
+
 <br><br>
-Vous pouvez maintenant enregistrer ce document en PDF.
+
+Votre engagement a été enregistré.
+
+<br><br>
+
+<strong>Statut :</strong>
+En attente de vérification et de versement.
+
+<br><br>
+
+L'administration de la tontine va maintenant vérifier votre
+engagement avant de procéder au versement de votre prise.
+
+<br><br>
+
+<strong>Date et heure :</strong>
+<span id="signatureDate"></span>
+
+<br><br>
+
+<strong>Référence :</strong>
+<span id="engagementId"></span>
+
 </div>
 
-<button id="pdf" class="no-print" style="display:none"
+<button id="pdf" class="no-print"
+style="display:none;background:#334155"
 onclick="window.print()">
-IMPRIMER / ENREGISTRER EN PDF
+
+ENREGISTRER L'ENGAGEMENT EN PDF
+
 </button>
 
 <hr>
 
 <small>
-Identifiant de l'engagement :
-<strong id="engagementId"></strong>
+Référence de l'engagement :
+<strong id="idBas"></strong>
 <br>
-Version 1.0 — AIDONS-NOUS VIVANTS
+AIDONS-NOUS VIVANTS — Version 2.0
 </small>
 
 </main>
@@ -122,80 +169,130 @@ function get(n){
 return p.get(n)||"Non renseigné";
 }
 
+
+/* Informations du membre */
+
 document.getElementById("nom").textContent=get("nom");
 document.getElementById("tel").textContent=get("telephone");
 document.getElementById("cycle").textContent=get("cycle");
 document.getElementById("position").textContent=get("position");
+document.getElementById("mode").textContent=get("mode");
+
+
+/* Montant */
 
 let montant=get("montant");
+
 if(!isNaN(Number(montant))){
 montant=Number(montant).toLocaleString("fr-FR")+" FCFA";
 }
+
 document.getElementById("montant").textContent=montant;
 
-document.getElementById("date").textContent=get("date");
-document.getElementById("mode").textContent=get("mode");
-document.getElementById("reference").textContent=get("reference");
+
+/* Référence unique */
 
 const id="AV-"+Date.now();
+
 document.getElementById("engagementId").textContent=id;
+document.getElementById("idBas").textContent=id;
 
 
 /* Signature */
 
 const canvas=document.getElementById("signature");
 const ctx=canvas.getContext("2d");
+
 let dessin=false;
 let signe=false;
 
 function taille(){
+
 canvas.width=canvas.offsetWidth;
 canvas.height=180;
+
 ctx.lineWidth=2;
 ctx.lineCap="round";
+ctx.lineJoin="round";
+
 }
 
 taille();
+
 window.addEventListener("resize",taille);
 
-function pos(e){
+
+function position(e){
+
 const r=canvas.getBoundingClientRect();
-const t=e.touches?e.touches[0]:e;
-return{x:t.clientX-r.left,y:t.clientY-r.top};
+
+const t=e.touches ? e.touches[0] : e;
+
+return{
+x:t.clientX-r.left,
+y:t.clientY-r.top
+};
+
 }
+
 
 function debut(e){
+
 e.preventDefault();
+
 dessin=true;
 signe=true;
-let q=pos(e);
+
+const q=position(e);
+
 ctx.beginPath();
 ctx.moveTo(q.x,q.y);
+
 }
+
 
 function tracer(e){
+
 if(!dessin)return;
+
 e.preventDefault();
-let q=pos(e);
+
+const q=position(e);
+
 ctx.lineTo(q.x,q.y);
 ctx.stroke();
+
 }
 
+
 function fin(){
+
 dessin=false;
+
 }
+
 
 canvas.addEventListener("mousedown",debut);
 canvas.addEventListener("mousemove",tracer);
 canvas.addEventListener("mouseup",fin);
+canvas.addEventListener("mouseleave",fin);
 
 canvas.addEventListener("touchstart",debut);
 canvas.addEventListener("touchmove",tracer);
 canvas.addEventListener("touchend",fin);
 
+
 function effacer(){
-ctx.clearRect(0,0,canvas.width,canvas.height);
+
+ctx.clearRect(
+0,
+0,
+canvas.width,
+canvas.height
+);
+
 signe=false;
+
 }
 
 
@@ -203,28 +300,88 @@ signe=false;
 
 function valider(){
 
-if(!document.getElementById("confirm").checked){
-alert("Veuillez confirmer la réception des fonds.");
+const confirmation=
+document.getElementById("confirm");
+
+
+if(!confirmation.checked){
+
+alert(
+"Veuillez confirmer que vous avez lu et accepté votre engagement."
+);
+
 return;
+
 }
+
 
 if(!signe){
-alert("Veuillez signer dans la zone prévue.");
+
+alert(
+"Veuillez signer dans la zone prévue."
+);
+
 return;
+
 }
 
-let maintenant=new Date();
+
+const maintenant=new Date();
+
 
 document.getElementById("signatureDate").textContent=
 maintenant.toLocaleString("fr-FR");
+
 
 document.getElementById("success").style.display="block";
 
 document.getElementById("pdf").style.display="block";
 
-document.getElementById("confirm").disabled=true;
+confirmation.disabled=true;
 
-alert("Votre engagement a été enregistré sur cet appareil.");
+
+/* Empêcher une nouvelle modification */
+
+document.querySelector(".clear").disabled=true;
+
+
+/* Enregistrer localement */
+
+const engagement={
+
+id:id,
+
+nom:get("nom"),
+
+telephone:get("telephone"),
+
+cycle:get("cycle"),
+
+position:get("position"),
+
+montant:get("montant"),
+
+mode:get("mode"),
+
+dateSignature:maintenant.toISOString(),
+
+signature:canvas.toDataURL("image/png"),
+
+statut:"EN_ATTENTE_VERIFICATION"
+
+};
+
+
+localStorage.setItem(
+"engagement_"+id,
+JSON.stringify(engagement)
+);
+
+
+alert(
+"Votre engagement a été signé. Votre demande est maintenant en attente de vérification et de versement."
+);
+
 }
 
 </script>
