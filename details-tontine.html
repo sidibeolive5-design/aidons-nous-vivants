@@ -1,171 +1,3 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Détails de la tontine - AIDONS-NOUS VIVANTS</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f7fa;
-      color: #222;
-    }
-
-    header {
-      background: #0f766e;
-      color: white;
-      text-align: center;
-      padding: 25px 15px;
-    }
-
-    header h1 {
-      margin: 0 0 8px;
-      font-size: 24px;
-    }
-
-    header p {
-      margin: 0;
-    }
-
-    .container {
-      max-width: 700px;
-      margin: 30px auto;
-      padding: 0 15px;
-    }
-
-    .card {
-      background: white;
-      padding: 25px;
-      border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    }
-
-    .card h2 {
-      color: #0f766e;
-      margin-top: 0;
-    }
-
-    .description {
-      color: #555;
-      line-height: 1.6;
-      margin-bottom: 25px;
-    }
-
-    .info {
-      display: flex;
-      justify-content: space-between;
-      gap: 15px;
-      padding: 14px 0;
-      border-bottom: 1px solid #eee;
-    }
-
-    .label {
-      color: #666;
-    }
-
-    .value {
-      font-weight: bold;
-      text-align: right;
-    }
-
-    .button {
-      display: block;
-      width: 100%;
-      padding: 15px;
-      margin-top: 20px;
-      border: none;
-      border-radius: 10px;
-      text-align: center;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .primary {
-      background: #0f766e;
-      color: white;
-    }
-
-    .secondary {
-      background: #e5e7eb;
-      color: #222;
-    }
-
-    .loading {
-      background: white;
-      padding: 30px;
-      border-radius: 15px;
-      text-align: center;
-    }
-
-    .error {
-      background: #fee2e2;
-      color: #991b1b;
-      padding: 20px;
-      border-radius: 10px;
-      line-height: 1.6;
-    }
-
-    .success {
-      background: #dcfce7;
-      color: #166534;
-      padding: 20px;
-      border-radius: 10px;
-      margin-top: 20px;
-      line-height: 1.6;
-    }
-
-    footer {
-      text-align: center;
-      padding: 30px 15px;
-      color: #777;
-      font-size: 14px;
-    }
-
-    @media (max-width: 500px) {
-      .info {
-        flex-direction: column;
-      }
-
-      .value {
-        text-align: left;
-      }
-    }
-  </style>
-</head>
-
-<body>
-
-<header>
-  <h1>AIDONS-NOUS VIVANTS</h1>
-  <p>Détails de la tontine</p>
-</header>
-
-<div class="container">
-
-  <div id="content" class="loading">
-    Chargement de la tontine...
-  </div>
-
-  <a href="dashboard.html" class="button secondary">
-    ← Retour à mon espace
-  </a>
-
-</div>
-
-<footer>
-  <p>AIDONS-NOUS VIVANTS</p>
-  <p>© 2026 — Ensemble, nous avançons.</p>
-</footer>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
@@ -182,16 +14,20 @@ const supabaseClient = supabase.createClient(
 );
 
 
-// Récupérer l'ID dans l'URL
+// ================================
+// RÉCUPÉRER L'ID
+// ================================
 
-const urlParams =
-  new URLSearchParams(window.location.search);
+const urlParams = new URLSearchParams(
+  window.location.search
+);
 
-const tontineId =
-  urlParams.get("id");
+const tontineId = urlParams.get("id");
 
 
-// Charger la tontine
+// ================================
+// CHARGER LA TONTINE
+// ================================
 
 async function loadTontine() {
 
@@ -199,227 +35,421 @@ async function loadTontine() {
     document.getElementById("content");
 
 
-  // Vérifier la connexion
+  try {
 
-  const {
-    data: userData,
-    error: userError
-  } = await supabaseClient.auth.getUser();
+    // Vérifier l'ID
+    if (!tontineId) {
+
+      content.innerHTML = `
+        <div class="error">
+          <strong>❌ ID manquant</strong><br><br>
+          Aucun identifiant de tontine n'est présent dans l'adresse.
+        </div>
+      `;
+
+      return;
+    }
 
 
-  if (userError || !userData.user) {
-
-    window.location.href = "connexion.html";
-
-    return;
-  }
-
-
-  // Vérifier l'ID
-
-  if (!tontineId) {
-
+    // Afficher temporairement l'ID
     content.innerHTML = `
-      <div class="error">
-        <strong>Tontine introuvable.</strong><br><br>
-        Aucun identifiant n'a été trouvé dans l'adresse.
+      <div class="loading">
+        🔄 Recherche de la tontine...<br><br>
+        ID : ${tontineId}
       </div>
     `;
 
-    return;
-  }
+
+    // Vérifier la connexion
+    const {
+      data: sessionData,
+      error: sessionError
+    } = await supabaseClient.auth.getUser();
 
 
-  // Requête Supabase
+    if (sessionError) {
 
-  const {
-    data: tontine,
-    error
-  } = await supabaseClient
-    .from("tontines")
-    .select(`
-      id,
-      nom,
-      description,
-      montant_prise,
-      cotisation,
-      frequence,
-      nombre_membres,
-      duree_jours,
-      penalite_par_jour,
-      date_debut,
-      heure_limite
-    `)
-    .eq("id", tontineId)
-    .single();
+      content.innerHTML = `
+        <div class="error">
+          <strong>❌ Erreur de connexion</strong><br><br>
+          ${sessionError.message}
+        </div>
+      `;
+
+      return;
+    }
 
 
-  // Afficher l'erreur exacte
+    if (!sessionData || !sessionData.user) {
 
-  if (error) {
+      content.innerHTML = `
+        <div class="error">
+          <strong>❌ Vous n'êtes pas connecté.</strong><br><br>
+          Vous devez être connecté pour consulter cette tontine.
+        </div>
+      `;
 
-    console.log("ERREUR DETAILS TONTINE :", error);
+      return;
+    }
+
+
+    // ================================
+    // REQUÊTE SUPABASE
+    // ================================
+
+    const {
+      data: tontine,
+      error: tontineError
+    } = await supabaseClient
+      .from("tontines")
+      .select("*")
+      .eq("id", tontineId)
+      .maybeSingle();
+
+
+    // Erreur Supabase
+    if (tontineError) {
+
+      console.error(
+        "ERREUR SUPABASE :",
+        tontineError
+      );
+
+      content.innerHTML = `
+        <div class="error">
+
+          <strong>❌ Erreur Supabase</strong>
+
+          <br><br>
+
+          <strong>Message :</strong><br>
+          ${tontineError.message}
+
+          <br><br>
+
+          <strong>Code :</strong><br>
+          ${tontineError.code || "Non disponible"}
+
+          <br><br>
+
+          <strong>Détails :</strong><br>
+          ${tontineError.details || "Non disponible"}
+
+        </div>
+      `;
+
+      return;
+    }
+
+
+    // Aucune tontine trouvée
+    if (!tontine) {
+
+      content.innerHTML = `
+        <div class="error">
+
+          <strong>❌ Tontine introuvable</strong>
+
+          <br><br>
+
+          L'ID suivant ne correspond à aucune tontine :
+
+          <br><br>
+
+          <strong>${tontineId}</strong>
+
+        </div>
+      `;
+
+      return;
+    }
+
+
+    // ================================
+    // FORMATAGE DES DONNÉES
+    // ================================
+
+    let dateDebut =
+      tontine.date_debut || "Non définie";
+
+
+    if (dateDebut !== "Non définie") {
+
+      const date =
+        new Date(dateDebut);
+
+      if (!isNaN(date.getTime())) {
+
+        dateDebut =
+          date.toLocaleDateString("fr-FR");
+
+      }
+    }
+
+
+    let heureLimite =
+      tontine.heure_limite;
+
+
+    // IMPORTANT :
+    // La colonne est actuellement booléenne
+
+    if (heureLimite === true) {
+
+      heureLimite = "18:00";
+
+    } else if (
+      heureLimite === false ||
+      heureLimite === null ||
+      heureLimite === undefined
+    ) {
+
+      heureLimite = "Non définie";
+
+    } else {
+
+      heureLimite =
+        String(heureLimite);
+
+    }
+
+
+    // ================================
+    // AFFICHER LA TONTINE
+    // ================================
+
+    content.className = "";
 
     content.innerHTML = `
-      <div class="error">
-        <strong>❌ Erreur Supabase</strong><br><br>
 
-        Message : ${error.message}<br><br>
+      <div class="card">
 
-        Code : ${error.code || "non disponible"}
+        <h2>
+          ${tontine.nom || "Tontine"}
+        </h2>
+
+        <p class="description">
+
+          ${
+            tontine.description ||
+            "Aucune description disponible."
+          }
+
+        </p>
+
+
+        <div class="info">
+
+          <span class="label">
+            💰 Montant de la prise
+          </span>
+
+          <span class="value">
+
+            ${
+              Number(
+                tontine.montant_prise || 0
+              ).toLocaleString("fr-FR")
+            }
+
+            F CFA
+
+          </span>
+
+        </div>
+
+
+        <div class="info">
+
+          <span class="label">
+            💵 Cotisation
+          </span>
+
+          <span class="value">
+
+            ${
+              Number(
+                tontine.cotisation || 0
+              ).toLocaleString("fr-FR")
+            }
+
+            F CFA / jour
+
+          </span>
+
+        </div>
+
+
+        <div class="info">
+
+          <span class="label">
+            🔄 Fréquence
+          </span>
+
+          <span class="value">
+
+            ${tontine.frequence || "Non définie"}
+
+          </span>
+
+        </div>
+
+
+        <div class="info">
+
+          <span class="label">
+            👥 Membres
+          </span>
+
+          <span class="value">
+
+            ${tontine.nombre_membres || "Non défini"}
+
+          </span>
+
+        </div>
+
+
+        <div class="info">
+
+          <span class="label">
+            📅 Durée
+          </span>
+
+          <span class="value">
+
+            ${
+              tontine.duree_jours ||
+              "Non définie"
+            }
+
+            jours
+
+          </span>
+
+        </div>
+
+
+        <div class="info">
+
+          <span class="label">
+            ⚠️ Pénalité
+          </span>
+
+          <span class="value">
+
+            ${
+              Number(
+                tontine.penalite_par_jour || 0
+              ).toLocaleString("fr-FR")
+            }
+
+            F CFA / jour
+
+          </span>
+
+        </div>
+
+
+        <div class="info">
+
+          <span class="label">
+            📆 Date de début
+          </span>
+
+          <span class="value">
+
+            ${dateDebut}
+
+          </span>
+
+        </div>
+
+
+        <div class="info">
+
+          <span class="label">
+            🕕 Heure limite
+          </span>
+
+          <span class="value">
+
+            ${heureLimite}
+
+          </span>
+
+        </div>
+
+
+        <button
+          class="button primary"
+          onclick="adherer()">
+
+          📝 Adhérer à cette tontine
+
+        </button>
+
       </div>
+
+
+      <div id="adhesionMessage"></div>
+
     `;
 
-    return;
   }
 
+  catch (error) {
 
-  // Vérifier la donnée
+    console.error(
+      "ERREUR JAVASCRIPT :",
+      error
+    );
 
-  if (!tontine) {
 
     content.innerHTML = `
+
       <div class="error">
-        <strong>Tontine introuvable.</strong><br><br>
-        Aucune tontine ne correspond à cet identifiant.
+
+        <strong>
+          ❌ Erreur JavaScript
+        </strong>
+
+        <br><br>
+
+        ${error.message}
+
       </div>
+
     `;
 
-    return;
   }
 
-
-  // Date
-
-  let dateDebut = tontine.date_debut;
-
-  if (dateDebut) {
-
-    const date =
-      new Date(dateDebut + "T00:00:00");
-
-    dateDebut =
-      date.toLocaleDateString("fr-FR");
-  }
-
-
-  // Heure
-
-  let heureLimite = tontine.heure_limite;
-
-if (heureLimite === true) {
-  heureLimite = "18:00";
-} else if (heureLimite === false || heureLimite === null) {
-  heureLimite = "Non définie";
-} else {
-  heureLimite = String(heureLimite).substring(0, 5);
-  }
-
-
-  // Afficher la tontine
-
-  content.className = "";
-
-  content.innerHTML = `
-
-    <div class="card">
-
-      <h2>${tontine.nom}</h2>
-
-      <p class="description">
-        ${tontine.description || "Aucune description disponible."}
-      </p>
-
-      <div class="info">
-        <span class="label">💰 Montant de la prise</span>
-        <span class="value">
-          ${Number(tontine.montant_prise).toLocaleString("fr-FR")} F CFA
-        </span>
-      </div>
-
-      <div class="info">
-        <span class="label">💵 Cotisation</span>
-        <span class="value">
-          ${Number(tontine.cotisation).toLocaleString("fr-FR")} F CFA / jour
-        </span>
-      </div>
-
-      <div class="info">
-        <span class="label">🔄 Fréquence</span>
-        <span class="value">
-          ${tontine.frequence}
-        </span>
-      </div>
-
-      <div class="info">
-        <span class="label">👥 Membres</span>
-        <span class="value">
-          ${tontine.nombre_membres}
-        </span>
-      </div>
-
-      <div class="info">
-        <span class="label">📅 Durée</span>
-        <span class="value">
-          ${tontine.duree_jours} jours
-        </span>
-      </div>
-
-      <div class="info">
-        <span class="label">⚠️ Pénalité</span>
-        <span class="value">
-          ${Number(tontine.penalite_par_jour).toLocaleString("fr-FR")} F CFA / jour
-        </span>
-      </div>
-
-      <div class="info">
-        <span class="label">📆 Date de début</span>
-        <span class="value">
-          ${dateDebut}
-        </span>
-      </div>
-
-      <div class="info">
-        <span class="label">🕕 Heure limite</span>
-        <span class="value">
-          ${heureLimite}
-        </span>
-      </div>
-
-      <button
-        class="button primary"
-        onclick="adherer()">
-        📝 Adhérer à cette tontine
-      </button>
-
-    </div>
-
-    <div id="adhesionMessage"></div>
-
-  `;
 }
 
 
-// Bouton adhésion
+// ================================
+// ADHÉSION
+// ================================
 
 function adherer() {
 
   const message =
-    document.getElementById("adhesionMessage");
+    document.getElementById(
+      "adhesionMessage"
+    );
+
 
   message.innerHTML = `
 
     <div class="success">
 
-      <strong>✅ Demande d'adhésion</strong><br><br>
-
-      Votre demande est prête à être enregistrée.
+      <strong>
+        ✅ Demande d'adhésion
+      </strong>
 
       <br><br>
 
-      La prochaine étape sera la vérification
-      de votre identité et la signature
-      du contrat individuel.
+      Votre demande est prête à être enregistrée.
 
     </div>
 
@@ -428,11 +458,10 @@ function adherer() {
 }
 
 
-// Lancer la fonction
+// ================================
+// LANCER
+// ================================
 
 loadTontine();
 
-</script>
-
-</body>
-</html>
+      </script>
